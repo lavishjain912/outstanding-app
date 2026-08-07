@@ -1,0 +1,1775 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>Outstanding App</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+
+    margin: 0;
+
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Arial,
+        sans-serif;
+
+    background: #f4f6f8;
+
+    color: #1f2937;
+}
+
+
+.header {
+
+    background: #1565c0;
+
+    color: white;
+
+    padding: 18px 16px;
+
+    text-align: center;
+
+    box-shadow:
+        0 2px 8px rgba(0,0,0,.15);
+}
+
+
+.header h1 {
+
+    margin: 0;
+
+    font-size: 22px;
+
+}
+
+
+.header p {
+
+    margin: 5px 0 0;
+
+    font-size: 13px;
+
+    opacity: .9;
+
+}
+
+
+.container {
+
+    max-width: 900px;
+
+    margin: auto;
+
+    padding: 16px;
+}
+
+
+.card {
+
+    background: white;
+
+    border-radius: 12px;
+
+    padding: 16px;
+
+    margin-bottom: 16px;
+
+    box-shadow:
+        0 2px 8px rgba(0,0,0,.08);
+}
+
+
+label {
+
+    display: block;
+
+    font-weight: 600;
+
+    margin-bottom: 7px;
+
+}
+
+
+input,
+select {
+
+    width: 100%;
+
+    padding: 13px;
+
+    border: 1px solid #d1d5db;
+
+    border-radius: 8px;
+
+    font-size: 16px;
+
+    background: white;
+}
+
+
+button {
+
+    border: none;
+
+    border-radius: 8px;
+
+    padding: 12px 16px;
+
+    font-size: 15px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+
+.primary {
+
+    background: #1565c0;
+
+    color: white;
+
+    width: 100%;
+
+    margin-top: 12px;
+}
+
+
+.primary:disabled {
+
+    background: #9ca3af;
+
+}
+
+
+.pdf-button {
+
+    background: #198754;
+
+    color: white;
+
+    width: 100%;
+
+    margin-top: 10px;
+}
+
+
+.status {
+
+    padding: 10px;
+
+    border-radius: 8px;
+
+    background: #eef4ff;
+
+    color: #1565c0;
+
+    font-size: 14px;
+
+    margin-top: 10px;
+
+}
+
+
+.error {
+
+    background: #fee2e2;
+
+    color: #b91c1c;
+}
+
+
+.summary {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, 1fr);
+
+    gap: 10px;
+
+    margin-top: 14px;
+}
+
+
+.summary-box {
+
+    background: #f8fafc;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 10px;
+
+    padding: 12px;
+
+}
+
+
+.summary-label {
+
+    font-size: 12px;
+
+    color: #6b7280;
+
+}
+
+
+.summary-value {
+
+    font-size: 18px;
+
+    font-weight: 700;
+
+    margin-top: 4px;
+
+}
+
+
+.table-wrap {
+
+    overflow-x: auto;
+
+    margin-top: 15px;
+}
+
+
+table {
+
+    width: 100%;
+
+    border-collapse: collapse;
+
+    min-width: 650px;
+
+    font-size: 13px;
+}
+
+
+th {
+
+    background: #d9eaf7;
+
+    font-weight: 700;
+
+    padding: 9px;
+
+    border: 1px solid #cbd5e1;
+
+    text-align: center;
+}
+
+
+td {
+
+    padding: 8px;
+
+    border: 1px solid #d1d5db;
+
+}
+
+
+td.center {
+
+    text-align: center;
+}
+
+
+td.amount,
+td.days {
+
+    text-align: right;
+}
+
+
+.overdue {
+
+    color: #dc2626;
+
+    font-weight: 700;
+}
+
+
+.total-row {
+
+    background: #e8e8e8;
+
+    font-weight: 700;
+}
+
+
+.section-title {
+
+    font-size: 18px;
+
+    margin:
+        8px 0 12px;
+
+}
+
+
+.hidden {
+
+    display: none;
+}
+
+
+.loading {
+
+    text-align: center;
+
+    padding: 20px;
+
+    color: #6b7280;
+}
+
+
+@media (max-width: 600px) {
+
+    .container {
+
+        padding: 10px;
+
+    }
+
+    .card {
+
+        padding: 13px;
+
+    }
+
+    .summary {
+
+        grid-template-columns: 1fr 1fr;
+
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="header">
+
+    <h1>Outstanding App</h1>
+
+    <p>Buyer Outstanding Report</p>
+
+</div>
+
+
+<div class="container">
+
+
+    <!-- BUYER SELECTION -->
+
+    <div class="card">
+
+        <label for="buyerSearch">
+            Search Buyer
+        </label>
+
+
+        <input
+            id="buyerSearch"
+            type="text"
+            placeholder="Type buyer name..."
+            autocomplete="off"
+        >
+
+
+        <select
+            id="buyerSelect"
+            size="6"
+            style="margin-top:10px;"
+        >
+
+            <option>
+                Loading buyers...
+            </option>
+
+        </select>
+
+
+        <button
+            id="loadButton"
+            class="primary"
+            disabled
+        >
+            View Outstanding
+        </button>
+
+
+        <div
+            id="status"
+            class="status"
+        >
+            Connecting to server...
+        </div>
+
+    </div>
+
+
+    <!-- REPORT -->
+
+    <div
+        id="report"
+        class="hidden"
+    >
+
+
+        <div class="card">
+
+            <h2
+                id="buyerTitle"
+                class="section-title"
+            ></h2>
+
+
+            <div class="summary">
+
+                <div class="summary-box">
+
+                    <div class="summary-label">
+                        Total Outstanding
+                    </div>
+
+                    <div
+                        id="totalOutstanding"
+                        class="summary-value"
+                    >
+                    </div>
+
+                </div>
+
+
+                <div class="summary-box">
+
+                    <div class="summary-label">
+                        Number of Bills
+                    </div>
+
+                    <div
+                        id="billCount"
+                        class="summary-value"
+                    >
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <button
+                id="pdfButton"
+                class="pdf-button"
+            >
+                Generate PDF
+            </button>
+
+        </div>
+
+
+        <!-- BILLS -->
+
+        <div class="card">
+
+            <h2 class="section-title">
+                Outstanding Bills
+            </h2>
+
+
+            <div class="table-wrap">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>S.No</th>
+
+                            <th>Supplier</th>
+
+                            <th>Bill Number</th>
+
+                            <th>Bill Date</th>
+
+                            <th>Amount</th>
+
+                            <th>Days Due</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="billBody">
+
+                    </tbody>
+
+
+                    <tfoot id="billFoot">
+
+                    </tfoot>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+        <!-- SUPPLIER SUMMARY -->
+
+        <div class="card">
+
+            <h2 class="section-title">
+                Supplier Wise Summary
+            </h2>
+
+
+            <div class="table-wrap">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Supplier</th>
+
+                            <th>Total Amount</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody
+                        id="supplierBody"
+                    >
+                    </tbody>
+
+
+                    <tfoot
+                        id="supplierFoot"
+                    >
+                    </tfoot>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+<script>
+
+
+// ============================================================
+// CONFIGURATION
+// ============================================================
+
+const API_URL =
+    "https://script.google.com/macros/s/AKfycbxA-kfhKp1DfL_x4uIr82aWntma7dzqwFvKPzFe4AFuOqT48P0Pm-AsiNYGOUWCSx_I/exec";
+
+
+// ============================================================
+// ELEMENTS
+// ============================================================
+
+const buyerSearch =
+    document.getElementById(
+        "buyerSearch"
+    );
+
+const buyerSelect =
+    document.getElementById(
+        "buyerSelect"
+    );
+
+const loadButton =
+    document.getElementById(
+        "loadButton"
+    );
+
+const statusBox =
+    document.getElementById(
+        "status"
+    );
+
+const report =
+    document.getElementById(
+        "report"
+    );
+
+const buyerTitle =
+    document.getElementById(
+        "buyerTitle"
+    );
+
+const totalOutstanding =
+    document.getElementById(
+        "totalOutstanding"
+    );
+
+const billCount =
+    document.getElementById(
+        "billCount"
+    );
+
+const billBody =
+    document.getElementById(
+        "billBody"
+    );
+
+const billFoot =
+    document.getElementById(
+        "billFoot"
+    );
+
+const supplierBody =
+    document.getElementById(
+        "supplierBody"
+    );
+
+const supplierFoot =
+    document.getElementById(
+        "supplierFoot"
+    );
+
+const pdfButton =
+    document.getElementById(
+        "pdfButton"
+    );
+
+
+// ============================================================
+// STATE
+// ============================================================
+
+let buyers = [];
+
+let currentBuyerData = null;
+
+
+// ============================================================
+// NUMBER FORMAT
+// ============================================================
+
+function formatIndianNumber(value) {
+
+    const number =
+        Number(value || 0);
+
+    return number.toLocaleString(
+        "en-IN",
+        {
+            maximumFractionDigits: 2
+        }
+    );
+
+}
+
+
+// ============================================================
+// LOAD BUYERS
+// ============================================================
+
+async function loadBuyers() {
+
+    try {
+
+        setStatus(
+            "Loading buyers..."
+        );
+
+
+        const response =
+            await fetch(
+                API_URL +
+                "?action=buyers"
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Server returned " +
+                response.status
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        if (data.error) {
+
+            throw new Error(
+                data.error
+            );
+
+        }
+
+
+        buyers =
+            data.buyers || [];
+
+
+        renderBuyerList(
+            buyers
+        );
+
+
+        setStatus(
+
+            buyers.length +
+            " buyers loaded"
+
+        );
+
+
+    }
+    catch (error) {
+
+        console.error(error);
+
+        setStatus(
+            "Unable to connect to backend: " +
+            error.message,
+
+            true
+        );
+
+    }
+
+}
+
+
+// ============================================================
+// RENDER BUYERS
+// ============================================================
+
+function renderBuyerList(
+    list
+) {
+
+    buyerSelect.innerHTML = "";
+
+
+    if (!list.length) {
+
+        buyerSelect.innerHTML =
+            "<option>No buyers found</option>";
+
+        loadButton.disabled = true;
+
+        return;
+
+    }
+
+
+    list.forEach(
+        function(buyer) {
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+            option.value =
+                buyer;
+
+            option.textContent =
+                buyer;
+
+            buyerSelect.appendChild(
+                option
+            );
+
+        }
+    );
+
+
+    loadButton.disabled = false;
+
+}
+
+
+// ============================================================
+// SEARCH BUYERS
+// ============================================================
+
+buyerSearch.addEventListener(
+    "input",
+    function() {
+
+        const query =
+            buyerSearch.value
+                .trim()
+                .toLowerCase();
+
+
+        const filtered =
+            buyers.filter(
+                function(buyer) {
+
+                    return buyer
+                        .toLowerCase()
+                        .includes(query);
+
+                }
+            );
+
+
+        renderBuyerList(
+            filtered
+        );
+
+    }
+);
+
+
+// ============================================================
+// SELECT BUYER
+// ============================================================
+
+buyerSelect.addEventListener(
+    "change",
+    function() {
+
+        if (
+            buyerSelect.value
+            &&
+            buyers.includes(
+                buyerSelect.value
+            )
+        ) {
+
+            loadButton.disabled =
+                false;
+
+        }
+
+    }
+);
+
+
+// ============================================================
+// LOAD BUYER
+// ============================================================
+
+loadButton.addEventListener(
+    "click",
+    loadBuyer
+);
+
+
+async function loadBuyer() {
+
+    const buyer =
+        buyerSelect.value;
+
+
+    if (!buyer) {
+
+        setStatus(
+            "Please select a buyer.",
+            true
+        );
+
+        return;
+
+    }
+
+
+    try {
+
+        loadButton.disabled =
+            true;
+
+
+        setStatus(
+            "Loading outstanding..."
+        );
+
+
+        const url =
+            API_URL +
+            "?action=buyer&name=" +
+            encodeURIComponent(
+                buyer
+            );
+
+
+        const response =
+            await fetch(url);
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Server returned " +
+                response.status
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        if (data.error) {
+
+            throw new Error(
+                data.error
+            );
+
+        }
+
+
+        currentBuyerData =
+            data;
+
+
+        renderReport(
+            data
+        );
+
+
+        setStatus(
+            "Report loaded"
+        );
+
+
+    }
+    catch (error) {
+
+        console.error(error);
+
+        setStatus(
+            "Unable to load buyer: " +
+            error.message,
+
+            true
+        );
+
+    }
+    finally {
+
+        loadButton.disabled =
+            false;
+
+    }
+
+}
+
+
+// ============================================================
+// RENDER REPORT
+// ============================================================
+
+function renderReport(
+    data
+) {
+
+    report.classList.remove(
+        "hidden"
+    );
+
+
+    buyerTitle.textContent =
+        data.buyer;
+
+
+    totalOutstanding.textContent =
+        "₹" +
+        formatIndianNumber(
+            data.total_outstanding
+        );
+
+
+    billCount.textContent =
+        data.bill_count;
+
+
+    renderBills(
+        data.bills || []
+    );
+
+
+    renderSupplierSummary(
+        data.supplier_summary || []
+    );
+
+
+    window.scrollTo({
+
+        top:
+            report.offsetTop - 10,
+
+        behavior:
+            "smooth"
+
+    });
+
+}
+
+
+// ============================================================
+// RENDER BILLS
+// ============================================================
+
+function renderBills(
+    bills
+) {
+
+    billBody.innerHTML = "";
+
+
+    let total = 0;
+
+
+    bills.forEach(
+        function(bill, index) {
+
+            const amount =
+                Number(
+                    bill.Amount || 0
+                );
+
+
+            const days =
+                Number(
+                    bill["Days Due"] || 0
+                );
+
+
+            total += amount;
+
+
+            const row =
+                document.createElement(
+                    "tr"
+                );
+
+
+            if (days > 120) {
+
+                row.classList.add(
+                    "overdue"
+                );
+
+            }
+
+
+            row.innerHTML = `
+
+                <td class="center">
+                    ${index + 1}
+                </td>
+
+                <td>
+                    ${escapeHtml(
+                        bill["Mumbai Party"] || ""
+                    )}
+                </td>
+
+                <td class="center">
+                    ${escapeHtml(
+                        String(
+                            bill["Bill Number"] || ""
+                        )
+                    )}
+                </td>
+
+                <td class="center">
+                    ${escapeHtml(
+                        bill["Bill Date"] || ""
+                    )}
+                </td>
+
+                <td class="amount">
+                    ${formatIndianNumber(
+                        amount
+                    )}
+                </td>
+
+                <td class="days">
+                    ${days}
+                </td>
+
+            `;
+
+
+            billBody.appendChild(
+                row
+            );
+
+        }
+    );
+
+
+    billFoot.innerHTML = `
+
+        <tr class="total-row">
+
+            <td></td>
+
+            <td></td>
+
+            <td></td>
+
+            <td style="text-align:right;">
+                Grand Total
+            </td>
+
+            <td class="amount">
+                ${formatIndianNumber(
+                    total
+                )}
+            </td>
+
+            <td></td>
+
+        </tr>
+
+    `;
+
+}
+
+
+// ============================================================
+// SUPPLIER SUMMARY
+// ============================================================
+
+function renderSupplierSummary(
+    suppliers
+) {
+
+    supplierBody.innerHTML = "";
+
+
+    let total = 0;
+
+
+    suppliers.forEach(
+        function(item) {
+
+            const amount =
+                Number(
+                    item.total || 0
+                );
+
+
+            total += amount;
+
+
+            const row =
+                document.createElement(
+                    "tr"
+                );
+
+
+            row.innerHTML = `
+
+                <td>
+                    ${escapeHtml(
+                        item.supplier || ""
+                    )}
+                </td>
+
+                <td class="amount">
+                    ${formatIndianNumber(
+                        amount
+                    )}
+                </td>
+
+            `;
+
+
+            supplierBody.appendChild(
+                row
+            );
+
+        }
+    );
+
+
+    supplierFoot.innerHTML = `
+
+        <tr class="total-row">
+
+            <td>
+                Grand Total
+            </td>
+
+            <td class="amount">
+                ${formatIndianNumber(
+                    total
+                )}
+            </td>
+
+        </tr>
+
+    `;
+
+}
+
+
+// ============================================================
+// PDF
+// ============================================================
+
+pdfButton.addEventListener(
+    "click",
+    generatePDF
+);
+
+
+function generatePDF() {
+
+    if (!currentBuyerData) {
+
+        return;
+
+    }
+
+
+    const data =
+        currentBuyerData;
+
+
+    let html = `
+
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>
+Outstanding - ${escapeHtml(
+    data.buyer
+)}
+</title>
+
+<style>
+
+@page {
+
+    size: A4;
+
+    margin: 10mm;
+
+}
+
+body {
+
+    font-family:
+        Arial,
+        sans-serif;
+
+    color: #222;
+
+    font-size: 10px;
+
+}
+
+h1 {
+
+    text-align: center;
+
+    font-size: 18px;
+
+    margin:
+        0 0 5px;
+
+}
+
+.buyer {
+
+    background:
+        #1565c0;
+
+    color: white;
+
+    font-weight: bold;
+
+    text-align: center;
+
+    font-size: 14px;
+
+    padding: 7px;
+
+}
+
+.info {
+
+    text-align: center;
+
+    font-size: 9px;
+
+    margin:
+        4px 0 8px;
+
+}
+
+table {
+
+    width: 100%;
+
+    border-collapse:
+        collapse;
+
+}
+
+th {
+
+    background:
+        #d9eaf7;
+
+    font-weight:
+        bold;
+
+}
+
+th,
+td {
+
+    border:
+        1px solid #aaa;
+
+    padding:
+        4px;
+
+}
+
+.center {
+
+    text-align:
+        center;
+
+}
+
+.right {
+
+    text-align:
+        right;
+
+}
+
+.total {
+
+    background:
+        #e8e8e8;
+
+    font-weight:
+        bold;
+
+}
+
+.overdue {
+
+    color:
+        red;
+
+    font-weight:
+        bold;
+
+}
+
+.section {
+
+    margin-top:
+        12px;
+
+    font-size:
+        13px;
+
+    font-weight:
+        bold;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+
+<h1>
+Outstanding List
+</h1>
+
+
+<div class="buyer">
+${escapeHtml(data.buyer)}
+</div>
+
+
+<div class="info">
+
+${new Date().toLocaleDateString("en-GB")}
+
+&nbsp;&nbsp;
+
+PK AGENCY - 9425436227, 9406600197
+
+</div>
+
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>S.No</th>
+
+<th>Supplier</th>
+
+<th>Bill Number</th>
+
+<th>Bill Date</th>
+
+<th>Amount</th>
+
+<th>Days Due</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+`;
+
+
+    let grandTotal = 0;
+
+
+    data.bills.forEach(
+        function(bill, index) {
+
+            const amount =
+                Number(
+                    bill.Amount || 0
+                );
+
+
+            const days =
+                Number(
+                    bill["Days Due"] || 0
+                );
+
+
+            grandTotal +=
+                amount;
+
+
+            html += `
+
+<tr class="${
+    days > 120
+        ? "overdue"
+        : ""
+}">
+
+<td class="center">
+${index + 1}
+</td>
+
+<td>
+${escapeHtml(
+    bill["Mumbai Party"] || ""
+)}
+</td>
+
+<td class="center">
+${escapeHtml(
+    String(
+        bill["Bill Number"] || ""
+    )
+)}
+</td>
+
+<td class="center">
+${escapeHtml(
+    bill["Bill Date"] || ""
+)}
+</td>
+
+<td class="right">
+${formatIndianNumber(
+    amount
+)}
+</td>
+
+<td class="right">
+${days}
+</td>
+
+</tr>
+
+`;
+
+        }
+    );
+
+
+    html += `
+
+<tr class="total">
+
+<td></td>
+
+<td></td>
+
+<td></td>
+
+<td class="right">
+Grand Total
+</td>
+
+<td class="right">
+${formatIndianNumber(
+    grandTotal
+)}
+</td>
+
+<td></td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+
+<div class="section">
+Supplier Wise Summary
+</div>
+
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>
+Supplier
+</th>
+
+<th>
+Total Amount
+</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+`;
+
+
+    data.supplier_summary.forEach(
+        function(item) {
+
+            html += `
+
+<tr>
+
+<td>
+${escapeHtml(
+    item.supplier || ""
+)}
+</td>
+
+<td class="right">
+${formatIndianNumber(
+    item.total
+)}
+</td>
+
+</tr>
+
+`;
+
+        }
+    );
+
+
+    html += `
+
+<tr class="total">
+
+<td>
+Grand Total
+</td>
+
+<td class="right">
+${formatIndianNumber(
+    grandTotal
+)}
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+
+</body>
+
+</html>
+
+`;
+
+
+    const printWindow =
+        window.open(
+            "",
+            "_blank"
+        );
+
+
+    if (!printWindow) {
+
+        alert(
+            "Please allow pop-ups for this app."
+        );
+
+        return;
+
+    }
+
+
+    printWindow.document.open();
+
+    printWindow.document.write(
+        html
+    );
+
+    printWindow.document.close();
+
+
+    printWindow.onload =
+        function() {
+
+            setTimeout(
+                function() {
+
+                    printWindow.print();
+
+                },
+                500
+            );
+
+        };
+
+}
+
+
+// ============================================================
+// STATUS
+// ============================================================
+
+function setStatus(
+    message,
+    isError = false
+) {
+
+    statusBox.textContent =
+        message;
+
+
+    statusBox.classList.toggle(
+        "error",
+        isError
+    );
+
+}
+
+
+// ============================================================
+// HTML ESCAPE
+// ============================================================
+
+function escapeHtml(
+    value
+) {
+
+    return String(value)
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+// ============================================================
+// START
+// ============================================================
+
+loadBuyers();
+
+</script>
+
+
+</body>
+
+</html>
