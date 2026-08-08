@@ -2433,10 +2433,20 @@ async function sharePDF() {
         // =====================================================
 
         const doc = new jsPDF({
-            orientation: "portrait",
-            unit: "mm",
-            format: "a4"
-        });
+    orientation: "portrait",
+    unit: "mm",
+    format: "a4"
+});
+
+// Full-page background: RGB(240, 240, 240)
+doc.setFillColor(240, 240, 240);
+doc.rect(
+    0,
+    0,
+    210,
+    297,
+    "F"
+);
 
         const buyerName =
             data.buyer || "Buyer";
@@ -2859,7 +2869,7 @@ async function sharePDF() {
                 1: {
 
                     cellWidth:
-                        50,
+                        65,
 
                     halign:
                         "left"
@@ -2870,7 +2880,7 @@ async function sharePDF() {
                 2: {
 
                     cellWidth:
-                        31,
+                        28,
 
                     halign:
                         "center"
@@ -2881,7 +2891,7 @@ async function sharePDF() {
                 3: {
 
                     cellWidth:
-                        27,
+                        30,
 
                     halign:
                         "center"
@@ -2892,7 +2902,7 @@ async function sharePDF() {
                 4: {
 
                     cellWidth:
-                        49,
+                        34,
 
                     halign:
                         "right"
