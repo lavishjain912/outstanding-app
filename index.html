@@ -2415,71 +2415,62 @@ pdfButton.addEventListener(
 
 async function sharePDF() {
 
-    if (
-        !currentBuyerData
-    ) {
-
+    if (!currentBuyerData) {
         return;
-
     }
-
 
     try {
 
-        pdfButton.disabled =
-            true;
+        pdfButton.disabled = true;
+        pdfButton.textContent = "Creating PDF...";
 
+        const { jsPDF } = window.jspdf;
 
-        pdfButton.textContent =
-            "Creating PDF...";
+        const data = currentBuyerData;
 
+        // =====================================================
+        // A4 PORTRAIT - KEEPING THE ORIGINAL FORMAT
+        // =====================================================
 
-        const {
-            jsPDF
-        } = window.jspdf;
-
-
-        const data =
-            currentBuyerData;
-
-
-        const doc =
-            new jsPDF({
-
-                orientation:
-                    "portrait",
-
-                unit:
-                    "mm",
-
-                format:
-                    "a4"
-
-            });
-
+        const doc = new jsPDF({
+            orientation: "portrait",
+            unit: "mm",
+            format: "a4"
+        });
 
         const buyerName =
-            data.buyer ||
-            "Buyer";
-
+            data.buyer || "Buyer";
 
         const fileName =
-            buyerName +
-            " Outstanding List.pdf";
+            buyerName + " Outstanding List.pdf";
 
 
-        /* =====================================================
-           PDF TITLE
-           ===================================================== */
+        // =====================================================
+        // PAGE SIZE / MARGINS
+        // =====================================================
+
+        const pageWidth = 210;
+
+        const leftMargin = 10;
+
+        const rightMargin = 10;
+
+        const tableWidth =
+            pageWidth -
+            leftMargin -
+            rightMargin;
+
+
+        // =====================================================
+        // TITLE
+        // =====================================================
 
         doc.setFont(
             "helvetica",
             "bold"
         );
 
-        doc.setFontSize(
-            16
-        );
+        doc.setFontSize(16);
 
         doc.setTextColor(
             0,
@@ -2487,21 +2478,23 @@ async function sharePDF() {
             0
         );
 
-
         doc.text(
             "Outstanding List",
-            105,
-            12,
+            pageWidth / 2,
+            13,
             {
-                align:
-                    "center"
+                align: "center"
             }
         );
 
 
-        /* =====================================================
-           BUYER BAND
-           ===================================================== */
+        // =====================================================
+        // BUYER NAME
+        // =====================================================
+
+        /*
+         * Same blue buyer-name treatment as the app.
+         */
 
         doc.setFillColor(
             21,
@@ -2509,20 +2502,12 @@ async function sharePDF() {
             192
         );
 
-
         doc.rect(
             10,
-            16,
+            17,
             190,
             9,
             "F"
-        );
-
-
-        doc.setTextColor(
-            255,
-            255,
-            255
         );
 
 
@@ -2531,30 +2516,65 @@ async function sharePDF() {
             "bold"
         );
 
+        doc.setFontSize(12);
 
-        doc.setFontSize(
-            12
+        doc.setTextColor(
+            255,
+            255,
+            255
         );
-
 
         doc.text(
             buyerName,
-            105,
-            22,
+            pageWidth / 2,
+            23.2,
             {
-                align:
-                    "center"
+                align: "center"
             }
         );
 
 
-        /* =====================================================
-           DATE + AGENCY
-           ===================================================== */
+        // =====================================================
+        // DATE + PK AGENCY
+        // =====================================================
+
+        const now =
+            new Date();
+
+        const day =
+            String(
+                now.getDate()
+            ).padStart(
+                2,
+                "0"
+            );
+
+        const month =
+            String(
+                now.getMonth() + 1
+            ).padStart(
+                2,
+                "0"
+            );
+
+        const year =
+            now.getFullYear();
+
 
         const today =
-            getReportDate();
+            day +
+            "-" +
+            month +
+            "-" +
+            year;
 
+
+        doc.setFont(
+            "helvetica",
+            "bold"
+        );
+
+        doc.setFontSize(9);
 
         doc.setTextColor(
             0,
@@ -2563,83 +2583,76 @@ async function sharePDF() {
         );
 
 
-        doc.setFont(
-            "helvetica",
-            "normal"
-        );
-
-
-        doc.setFontSize(
-            8
-        );
-
+        /*
+         * Date on left.
+         */
 
         doc.text(
             today,
-            42,
-            30,
+            28,
+            33,
             {
-                align:
-                    "center"
+                align: "center"
             }
         );
 
+
+        /*
+         * PK AGENCY on right.
+         */
 
         doc.text(
             "PK AGENCY - 9425436227, 9406600197",
-            145,
-            30,
+            154,
+            33,
             {
-                align:
-                    "center"
+                align: "center"
             }
         );
 
 
-        /* =====================================================
-           BILL DATA
-           ===================================================== */
+        // =====================================================
+        // BILL DATA
+        // =====================================================
 
         const billRows =
-            (data.bills || [])
-                .map(
-                    function(
-                        bill,
-                        index
-                    ) {
+            (data.bills || []).map(
+                function (bill, index) {
 
-                        return [
+                    return [
 
-                            index + 1,
+                        String(
+                            index + 1
+                        ),
 
+                        bill[
+                            "Mumbai Party"
+                        ] || "",
+
+                        String(
                             bill[
-                                "Mumbai Party"
-                            ] || "",
+                                "Bill Number"
+                            ] || ""
+                        ),
 
-                            String(
-                                bill[
-                                    "Bill Number"
-                                ] || ""
-                            ),
+                        bill[
+                            "Bill Date"
+                        ] || "",
 
+                        formatIndianNumber(
+                            bill.Amount
+                        ),
+
+                        String(
                             bill[
-                                "Bill Date"
-                            ] || "",
+                                "Days Due"
+                            ] || 0
+                        )
 
-                            formatIndianNumber(
-                                bill.Amount
-                            ),
+                    ];
 
-                            String(
-                                bill[
-                                    "Days Due"
-                                ] || 0
-                            )
-
-                        ];
-
-                    }
-                );
+                }
+            );
 
 
         const total =
@@ -2649,24 +2662,27 @@ async function sharePDF() {
             );
 
 
-        /* =====================================================
-           BILL TABLE
-           ===================================================== */
+        // =====================================================
+        // BILL TABLE
+        // =====================================================
 
         doc.autoTable({
 
-            startY:
-                34,
+            startY: 38,
 
             margin: {
+
                 left:
-                    10,
+                    leftMargin,
+
                 right:
-                    10
+                    rightMargin
+
             },
 
             tableWidth:
-                190,
+                tableWidth,
+
 
             head: [[
 
@@ -2717,166 +2733,255 @@ async function sharePDF() {
                 font:
                     "helvetica",
 
+                /*
+                 * Larger than the previous 7 pt.
+                 * This is the main readability improvement.
+                 */
                 fontSize:
-                    7,
+                    9,
 
-                cellPadding:
-                    2,
+                cellPadding: {
 
-                lineColor:
-                    [170,170,170],
+                    top:
+                        2.3,
 
-                lineWidth:
-                    0.15,
+                    bottom:
+                        2.3,
+
+                    left:
+                        2,
+
+                    right:
+                        2
+
+                },
 
                 textColor:
-                    [0,0,0],
+                    [0, 0, 0],
+
+                lineColor:
+                    [150, 150, 150],
+
+                lineWidth:
+                    0.2,
 
                 valign:
-                    "middle"
+                    "middle",
+
+                overflow:
+                    "linebreak"
 
             },
 
+
+            // =================================================
+            // BLUE TABLE HEADER / WHITE TEXT
+            // =================================================
 
             headStyles: {
 
                 fillColor:
-                    [217,234,247],
+                    [31, 105, 190],
 
                 textColor:
-                    [0,0,0],
+                    [255, 255, 255],
 
                 fontStyle:
                     "bold",
 
+                fontSize:
+                    9.5,
+
                 halign:
-                    "center"
+                    "center",
 
-            },
+                valign:
+                    "middle",
 
+                cellPadding: {
 
-            footStyles: {
+                    top:
+                        2.8,
 
-                fillColor:
-                    [232,232,232],
-
-                textColor:
-                    [0,0,0],
-
-                fontStyle:
-                    "bold"
-
-            },
-
-
-            columnStyles: {
-
-                0: {
-
-                    halign:
-                        "center",
-
-                    cellWidth:
-                        12
-
-                },
-
-                1: {
-
-                    cellWidth:
-                        48
-
-                },
-
-                2: {
-
-                    halign:
-                        "center",
-
-                    cellWidth:
-                        25
-
-                },
-
-                3: {
-
-                    halign:
-                        "center",
-
-                    cellWidth:
-                        24
-
-                },
-
-                4: {
-
-                    halign:
-                        "right",
-
-                    cellWidth:
-                        35
-
-                },
-
-                5: {
-
-                    halign:
-                        "right",
-
-                    cellWidth:
-                        20
+                    bottom:
+                        2.8
 
                 }
 
             },
 
 
+            // =================================================
+            // GRAND TOTAL
+            // =================================================
+
+            footStyles: {
+
+                fillColor:
+                    [255, 235, 59],
+
+                textColor:
+                    [0, 0, 0],
+
+                fontStyle:
+                    "bold",
+
+                fontSize:
+                    9.5
+
+            },
+
+
+            // =================================================
+            // COLUMN WIDTHS
+            // =================================================
+
+            columnStyles: {
+
+                // S.No
+                0: {
+
+                    cellWidth:
+                        13,
+
+                    halign:
+                        "center"
+
+                },
+
+                // Supplier
+                1: {
+
+                    cellWidth:
+                        47,
+
+                    halign:
+                        "left"
+
+                },
+
+                // Bill Number
+                2: {
+
+                    cellWidth:
+                        30,
+
+                    halign:
+                        "center"
+
+                },
+
+                // Bill Date
+                3: {
+
+                    cellWidth:
+                        28,
+
+                    halign:
+                        "center"
+
+                },
+
+                // Amount
+                4: {
+
+                    cellWidth:
+                        47,
+
+                    halign:
+                        "right"
+
+                },
+
+                // Days Due
+                5: {
+
+                    cellWidth:
+                        25,
+
+                    halign:
+                        "right"
+
+                }
+
+            },
+
+
+            // =================================================
+            // OVERDUE ROW STYLING
+            //
+            // Same idea as original report generator:
+            // >120 days = red / highlighted.
+            // =================================================
+
             didParseCell:
-                function(
-                    hookData
-                ) {
+                function (hookData) {
 
                     if (
-
-                        hookData.section ===
+                        hookData.section !==
                         "body"
-
-                        &&
-
-                        hookData.column.index ===
-                        5
-
                     ) {
 
-                        const row =
-                            data.bills[
-                                hookData.row.index
+                        return;
+
+                    }
+
+
+                    const rowIndex =
+                        hookData.row.index;
+
+
+                    const bill =
+                        data.bills[
+                            rowIndex
+                        ];
+
+
+                    if (!bill) {
+
+                        return;
+
+                    }
+
+
+                    const days =
+                        Number(
+                            bill[
+                                "Days Due"
+                            ] || 0
+                        );
+
+
+                    if (
+                        days > 120
+                    ) {
+
+                        /*
+                         * Light pink background.
+                         */
+
+                        hookData.cell.styles.fillColor =
+                            [
+                                255,
+                                205,
+                                210
                             ];
 
 
-                        const days =
-                            Number(
-                                row[
-                                    "Days Due"
-                                ] || 0
-                            );
+                        /*
+                         * Red text.
+                         */
+
+                        hookData.cell.styles.textColor =
+                            [
+                                220,
+                                38,
+                                38
+                            ];
 
 
-                        if (
-                            days > 120
-                        ) {
-
-                            hookData.cell.styles.textColor =
-                                [
-                                    220,
-                                    38,
-                                    38
-                                ];
-
-                            hookData.cell.styles.fontStyle =
-                                "bold";
-
-                        }
+                        hookData.cell.styles.fontStyle =
+                            "bold";
 
                     }
 
@@ -2885,17 +2990,23 @@ async function sharePDF() {
         });
 
 
-        /* =====================================================
-           SUPPLIER SUMMARY
-           ===================================================== */
+        // =====================================================
+        // SUPPLIER WISE SUMMARY
+        // =====================================================
 
         let finalY =
             doc.lastAutoTable.finalY +
-            10;
+            8;
 
+
+        /*
+         * If the bill table has reached the bottom,
+         * start supplier summary on a new page.
+         */
 
         if (
-            finalY > 265
+            finalY >
+            265
         ) {
 
             doc.addPage();
@@ -2911,11 +3022,9 @@ async function sharePDF() {
             "bold"
         );
 
-
         doc.setFontSize(
             11
         );
-
 
         doc.setTextColor(
             0,
@@ -2926,15 +3035,19 @@ async function sharePDF() {
 
         doc.text(
             "Supplier Wise Summary",
-            10,
+            leftMargin,
             finalY
         );
 
 
+        // =====================================================
+        // SUPPLIER DATA
+        // =====================================================
+
         const supplierRows =
             (data.supplier_summary || [])
                 .map(
-                    function(item) {
+                    function (item) {
 
                         return [
 
@@ -2962,6 +3075,10 @@ async function sharePDF() {
         ]);
 
 
+        // =====================================================
+        // SUPPLIER SUMMARY TABLE
+        // =====================================================
+
         doc.autoTable({
 
             startY:
@@ -2970,10 +3087,10 @@ async function sharePDF() {
             margin: {
 
                 left:
-                    10,
+                    leftMargin,
 
                 right:
-                    10
+                    rightMargin
 
             },
 
@@ -3004,19 +3121,32 @@ async function sharePDF() {
                     "helvetica",
 
                 fontSize:
-                    8,
+                    9,
 
-                cellPadding:
-                    2,
+                cellPadding: {
 
-                lineColor:
-                    [170,170,170],
+                    top:
+                        2.2,
 
-                lineWidth:
-                    0.15,
+                    bottom:
+                        2.2,
+
+                    left:
+                        3,
+
+                    right:
+                        3
+
+                },
 
                 textColor:
-                    [0,0,0]
+                    [0, 0, 0],
+
+                lineColor:
+                    [150, 150, 150],
+
+                lineWidth:
+                    0.2
 
             },
 
@@ -3024,13 +3154,16 @@ async function sharePDF() {
             headStyles: {
 
                 fillColor:
-                    [217,234,247],
+                    [31, 105, 190],
 
                 textColor:
-                    [0,0,0],
+                    [255, 255, 255],
 
                 fontStyle:
                     "bold",
+
+                fontSize:
+                    9.5,
 
                 halign:
                     "center"
@@ -3043,14 +3176,17 @@ async function sharePDF() {
                 0: {
 
                     cellWidth:
-                        110
+                        105,
+
+                    halign:
+                        "left"
 
                 },
 
                 1: {
 
                     cellWidth:
-                        60,
+                        65,
 
                     halign:
                         "right"
@@ -3060,10 +3196,12 @@ async function sharePDF() {
             },
 
 
+            // =================================================
+            // SUPPLIER GRAND TOTAL
+            // =================================================
+
             didParseCell:
-                function(
-                    hookData
-                ) {
+                function (hookData) {
 
                     if (
 
@@ -3079,9 +3217,9 @@ async function sharePDF() {
 
                         hookData.cell.styles.fillColor =
                             [
-                                232,
-                                232,
-                                232
+                                255,
+                                235,
+                                59
                             ];
 
                         hookData.cell.styles.fontStyle =
@@ -3094,9 +3232,9 @@ async function sharePDF() {
         });
 
 
-        /* =====================================================
-           PDF BLOB
-           ===================================================== */
+        // =====================================================
+        // CREATE PDF BLOB
+        // =====================================================
 
         const pdfBlob =
             doc.output(
@@ -3121,9 +3259,9 @@ async function sharePDF() {
             );
 
 
-        /* =====================================================
-           MOBILE SHARE
-           ===================================================== */
+        // =====================================================
+        // MOBILE SHARE
+        // =====================================================
 
         if (
 
@@ -3166,9 +3304,9 @@ async function sharePDF() {
 
         else {
 
-            /* =================================================
-               FALLBACK DOWNLOAD
-               ================================================= */
+            // =================================================
+            // FALLBACK DOWNLOAD
+            // =================================================
 
             const url =
                 URL.createObjectURL(
@@ -3250,14 +3388,12 @@ async function sharePDF() {
         pdfButton.disabled =
             false;
 
-
         pdfButton.textContent =
             "Share PDF";
 
     }
 
 }
-
 
 /* ============================================================
    HTML ESCAPE
