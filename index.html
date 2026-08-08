@@ -1,2120 +1,42 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-
-<meta charset="UTF-8">
-
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
-
-<meta
-    name="apple-mobile-web-app-capable"
-    content="yes"
->
-
-<meta
-    name="apple-mobile-web-app-status-bar-style"
-    content="default"
->
-
-<title>Outstanding App</title>
-
-
-<!-- PDF LIBRARIES -->
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
-
-
-<style>
-
-/* ============================================================
-   GENERAL
-   ============================================================ */
-
-* {
-    box-sizing: border-box;
-}
-
-body {
-
-    margin: 0;
-
-    font-family:
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        Arial,
-        sans-serif;
-
-    background: #f4f6f8;
-
-    color: #1f2937;
-}
-
-
-/* ============================================================
-   LOGIN SCREEN
-   ============================================================ */
-
-#loginScreen {
-
-    position: fixed;
-
-    inset: 0;
-
-    z-index: 99999;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    padding: 20px;
-
-    background:
-        linear-gradient(
-            135deg,
-            #0d47a1,
-            #1565c0
-        );
-}
-
-
-.login-card {
-
-    width: 100%;
-
-    max-width: 360px;
-
-    background: white;
-
-    border-radius: 18px;
-
-    padding: 28px 22px;
-
-    box-shadow:
-        0 15px 40px
-        rgba(0,0,0,.25);
-
-    text-align: center;
-}
-
-
-.login-icon {
-
-    width: 58px;
-
-    height: 58px;
-
-    margin: 0 auto 14px;
-
-    border-radius: 50%;
-
-    background: #e8f1ff;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    font-size: 27px;
-}
-
-
-.login-card h2 {
-
-    margin: 0;
-
-    font-size: 22px;
-
-    color: #0d47a1;
-}
-
-
-.login-card p {
-
-    margin: 7px 0 20px;
-
-    color: #6b7280;
-
-    font-size: 14px;
-}
-
-
-#pinInput {
-
-    width: 100%;
-
-    padding: 14px;
-
-    border:
-        1px solid #cbd5e1;
-
-    border-radius: 10px;
-
-    text-align: center;
-
-    font-size: 22px;
-
-    letter-spacing: 8px;
-
-    outline: none;
-}
-
-
-#pinInput:focus {
-
-    border-color: #1565c0;
-
-    box-shadow:
-        0 0 0 3px
-        rgba(21,101,192,.12);
-}
-
-
-#loginButton {
-
-    width: 100%;
-
-    margin-top: 14px;
-
-    padding: 13px;
-
-    border: none;
-
-    border-radius: 10px;
-
-    background: #1565c0;
-
-    color: white;
-
-    font-size: 16px;
-
-    font-weight: 700;
-}
-
-
-#loginButton:disabled {
-
-    background: #9ca3af;
-}
-
-
-#loginError {
-
-    min-height: 20px;
-
-    margin-top: 12px;
-
-    color: #dc2626;
-
-    font-size: 13px;
-}
-
-
-/* ============================================================
-   MAIN APP
-   ============================================================ */
-
-#app {
-
-    display: none;
-}
-
-
-.header {
-
-    background:
-        linear-gradient(
-            135deg,
-            #1565c0,
-            #0d47a1
-        );
-
-    color: white;
-
-    padding: 18px 16px;
-
-    text-align: center;
-
-    box-shadow:
-        0 2px 8px
-        rgba(0,0,0,.15);
-}
-
-
-.header h1 {
-
-    margin: 0;
-
-    font-size: 22px;
-}
-
-
-.header p {
-
-    margin: 5px 0 0;
-
-    font-size: 13px;
-
-    opacity: .9;
-}
-
-
-.container {
-
-    max-width: 900px;
-
-    margin: auto;
-
-    padding: 14px;
-}
-
-
-.card {
-
-    background: white;
-
-    border-radius: 12px;
-
-    padding: 16px;
-
-    margin-bottom: 15px;
-
-    box-shadow:
-        0 2px 8px
-        rgba(0,0,0,.08);
-}
-
-
-/* ============================================================
-   SEARCH
-   ============================================================ */
-
-label {
-
-    display: block;
-
-    font-weight: 600;
-
-    margin-bottom: 7px;
-}
-
-
-.search-box {
-
-    position: relative;
-}
-
-
-#buyerSearch {
-
-    width: 100%;
-
-    padding:
-        13px 42px
-        13px 13px;
-
-    border:
-        1px solid #cbd5e1;
-
-    border-radius: 9px;
-
-    font-size: 16px;
-
-    outline: none;
-
-    background: white;
-}
-
-
-#buyerSearch:focus {
-
-    border-color: #1565c0;
-
-    box-shadow:
-        0 0 0 3px
-        rgba(21,101,192,.12);
-}
-
-
-.clear-search {
-
-    position: absolute;
-
-    right: 10px;
-
-    top: 50%;
-
-    transform:
-        translateY(-50%);
-
-    width: 28px;
-
-    height: 28px;
-
-    border-radius: 50%;
-
-    border: none;
-
-    background: #e5e7eb;
-
-    color: #374151;
-
-    font-size: 18px;
-
-    line-height: 28px;
-
-    padding: 0;
-}
-
-
-/* ============================================================
-   BUYER LIST
-   ============================================================ */
-
-.buyer-list {
-
-    margin-top: 9px;
-
-    border:
-        1px solid #d1d5db;
-
-    border-radius: 9px;
-
-    background: white;
-
-    max-height: 270px;
-
-    overflow-y: auto;
-
-    -webkit-overflow-scrolling: touch;
-}
-
-
-.buyer-item {
-
-    padding: 13px 12px;
-
-    border-bottom:
-        1px solid #edf0f3;
-
-    font-size: 15px;
-
-    cursor: pointer;
-
-    -webkit-tap-highlight-color:
-        rgba(21,101,192,.12);
-}
-
-
-.buyer-item:last-child {
-
-    border-bottom: none;
-}
-
-
-.buyer-item:active {
-
-    background: #e8f1ff;
-}
-
-
-.buyer-item.selected {
-
-    background: #dbeafe;
-
-    color: #0d47a1;
-
-    font-weight: 700;
-}
-
-
-.no-buyers {
-
-    padding: 18px;
-
-    text-align: center;
-
-    color: #6b7280;
-
-    font-size: 14px;
-}
-
-
-/* ============================================================
-   BUTTONS
-   ============================================================ */
-
-button {
-
-    border: none;
-
-    border-radius: 9px;
-
-    padding: 12px 16px;
-
-    font-size: 15px;
-
-    font-weight: 600;
-
-    cursor: pointer;
-}
-
-
-.primary {
-
-    background: #1565c0;
-
-    color: white;
-
-    width: 100%;
-
-    margin-top: 12px;
-}
-
-
-.primary:disabled {
-
-    background: #9ca3af;
-}
-
-
-.pdf-button {
-
-    background: #198754;
-
-    color: white;
-
-    width: 100%;
-
-    margin-top: 10px;
-}
-
-
-.pdf-button:disabled {
-
-    background: #9ca3af;
-}
-
-
-/* ============================================================
-   STATUS
-   ============================================================ */
-
-.status {
-
-    padding: 10px;
-
-    border-radius: 8px;
-
-    background: #eef4ff;
-
-    color: #1565c0;
-
-    font-size: 14px;
-
-    margin-top: 10px;
-}
-
-
-.error {
-
-    background: #fee2e2;
-
-    color: #b91c1c;
-}
-
-
-/* ============================================================
-   SUMMARY
-   ============================================================ */
-
-.summary {
-
-    display: grid;
-
-    grid-template-columns:
-        repeat(2, 1fr);
-
-    gap: 10px;
-
-    margin-top: 14px;
-}
-
-
-.summary-box {
-
-    background: #f8fafc;
-
-    border:
-        1px solid #e5e7eb;
-
-    border-radius: 10px;
-
-    padding: 12px;
-}
-
-
-.summary-label {
-
-    font-size: 12px;
-
-    color: #6b7280;
-}
-
-
-.summary-value {
-
-    font-size: 18px;
-
-    font-weight: 700;
-
-    margin-top: 4px;
-}
-
-
-/* ============================================================
-   TABLE
-   ============================================================ */
-
-.table-wrap {
-
-    overflow-x: auto;
-
-    margin-top: 15px;
-}
-
-
-table {
-
-    width: 100%;
-
-    border-collapse: collapse;
-
-    min-width: 650px;
-
-    font-size: 13px;
-}
-
-
-th {
-
-    background: #d9eaf7;
-
-    font-weight: 700;
-
-    padding: 9px;
-
-    border:
-        1px solid #cbd5e1;
-
-    text-align: center;
-}
-
-
-td {
-
-    padding: 8px;
-
-    border:
-        1px solid #d1d5db;
-}
-
-
-td.center {
-
-    text-align: center;
-}
-
-
-td.amount,
-td.days {
-
-    text-align: right;
-}
-
-
-.overdue {
-
-    color: #dc2626;
-
-    font-weight: 700;
-}
-
-
-.total-row {
-
-    background: #e8e8e8;
-
-    font-weight: 700;
-}
-
-
-/* ============================================================
-   SECTION
-   ============================================================ */
-
-.section-title {
-
-    font-size: 18px;
-
-    margin:
-        8px 0 12px;
-}
-
-
-.hidden {
-
-    display: none;
-}
-
-
-/* ============================================================
-   MOBILE
-   ============================================================ */
-
-@media (max-width: 600px) {
-
-    .container {
-
-        padding: 10px;
-    }
-
-    .card {
-
-        padding: 13px;
-    }
-
-    .summary {
-
-        grid-template-columns:
-            1fr 1fr;
-    }
-
-}
-
-</style>
-
-</head>
-
-
-<body>
-
-
-<!-- =========================================================
-     PIN SCREEN
-     ========================================================= -->
-
-<div id="loginScreen">
-
-    <div class="login-card">
-
-        <div class="login-icon">
-            🔐
-        </div>
-
-        <h2>
-            Outstanding App
-        </h2>
-
-        <p>
-            Enter your PIN to continue
-        </p>
-
-        <input
-            id="pinInput"
-            type="password"
-            inputmode="numeric"
-            maxlength="4"
-            autocomplete="off"
-            placeholder="••••"
-        >
-
-        <button
-            id="loginButton"
-        >
-            Unlock
-        </button>
-
-        <div
-            id="loginError"
-        ></div>
-
-    </div>
-
-</div>
-
-
-<!-- =========================================================
-     MAIN APP
-     ========================================================= -->
-
-<div id="app">
-
-
-<div class="header">
-
-    <h1>
-        Outstanding App
-    </h1>
-
-    <p>
-        Buyer Outstanding Report
-    </p>
-
-</div>
-
-
-<div class="container">
-
-
-<!-- =======================================================
-     BUYER SEARCH
-     ======================================================= -->
-
-<div class="card">
-
-    <label for="buyerSearch">
-        Search Buyer
-    </label>
-
-
-    <div class="search-box">
-
-        <input
-            id="buyerSearch"
-            type="text"
-            placeholder="Type buyer name..."
-            autocomplete="off"
-        >
-
-
-        <button
-            id="clearSearch"
-            class="clear-search"
-            type="button"
-        >
-            ×
-        </button>
-
-    </div>
-
-
-    <div
-        id="buyerList"
-        class="buyer-list"
-    >
-
-        <div class="no-buyers">
-            Loading buyers...
-        </div>
-
-    </div>
-
-
-    <button
-        id="loadButton"
-        class="primary"
-        disabled
-    >
-        View Outstanding
-    </button>
-
-
-    <div
-        id="status"
-        class="status"
-    >
-        Connecting to server...
-    </div>
-
-</div>
-
-
-<!-- =======================================================
-     REPORT
-     ======================================================= -->
-
-<div
-    id="report"
-    class="hidden"
->
-
-
-<!-- SUMMARY -->
-
-<div class="card">
-
-    <h2
-        id="buyerTitle"
-        class="section-title"
-    ></h2>
-
-
-    <div class="summary">
-
-        <div class="summary-box">
-
-            <div class="summary-label">
-                Total Outstanding
-            </div>
-
-            <div
-                id="totalOutstanding"
-                class="summary-value"
-            ></div>
-
-        </div>
-
-
-        <div class="summary-box">
-
-            <div class="summary-label">
-                Number of Bills
-            </div>
-
-            <div
-                id="billCount"
-                class="summary-value"
-            ></div>
-
-        </div>
-
-    </div>
-
-
-    <button
-        id="pdfButton"
-        class="pdf-button"
-    >
-        Share PDF
-    </button>
-
-</div>
-
-
-<!-- BILLS -->
-
-<div class="card">
-
-    <h2 class="section-title">
-        Outstanding Bills
-    </h2>
-
-
-    <div class="table-wrap">
-
-        <table>
-
-            <thead>
-
-                <tr>
-
-                    <th>S.No</th>
-                    <th>Supplier</th>
-                    <th>Bill Number</th>
-                    <th>Bill Date</th>
-                    <th>Amount</th>
-                    <th>Days Due</th>
-
-                </tr>
-
-            </thead>
-
-
-            <tbody id="billBody"></tbody>
-
-            <tfoot id="billFoot"></tfoot>
-
-        </table>
-
-    </div>
-
-</div>
-
-
-<!-- SUPPLIER SUMMARY -->
-
-<div class="card">
-
-    <h2 class="section-title">
-        Supplier Wise Summary
-    </h2>
-
-
-    <div class="table-wrap">
-
-        <table>
-
-            <thead>
-
-                <tr>
-
-                    <th>Supplier</th>
-                    <th>Total Amount</th>
-
-                </tr>
-
-            </thead>
-
-
-            <tbody id="supplierBody"></tbody>
-
-            <tfoot id="supplierFoot"></tfoot>
-
-        </table>
-
-    </div>
-
-</div>
-
-
-</div>
-
-
-</div>
-
-</div>
-
-
-<script>
-
-/* ============================================================
-   API
-   ============================================================ */
-
-const API_URL =
-"https://script.google.com/macros/s/AKfycbxA-kfhKp1DfL_x4uIr82aWntma7dzqwFvKPzFe4AFuOqT48P0Pm-AsiNYGOUWCSx_I/exec";
-
-
-/* ============================================================
-   ELEMENTS
-   ============================================================ */
-
-const loginScreen =
-    document.getElementById(
-        "loginScreen"
-    );
-
-const app =
-    document.getElementById(
-        "app"
-    );
-
-const pinInput =
-    document.getElementById(
-        "pinInput"
-    );
-
-const loginButton =
-    document.getElementById(
-        "loginButton"
-    );
-
-const loginError =
-    document.getElementById(
-        "loginError"
-    );
-
-
-const buyerSearch =
-    document.getElementById(
-        "buyerSearch"
-    );
-
-const clearSearch =
-    document.getElementById(
-        "clearSearch"
-    );
-
-const buyerList =
-    document.getElementById(
-        "buyerList"
-    );
-
-const loadButton =
-    document.getElementById(
-        "loadButton"
-    );
-
-const statusBox =
-    document.getElementById(
-        "status"
-    );
-
-const report =
-    document.getElementById(
-        "report"
-    );
-
-const buyerTitle =
-    document.getElementById(
-        "buyerTitle"
-    );
-
-const totalOutstanding =
-    document.getElementById(
-        "totalOutstanding"
-    );
-
-const billCount =
-    document.getElementById(
-        "billCount"
-    );
-
-const billBody =
-    document.getElementById(
-        "billBody"
-    );
-
-const billFoot =
-    document.getElementById(
-        "billFoot"
-    );
-
-const supplierBody =
-    document.getElementById(
-        "supplierBody"
-    );
-
-const supplierFoot =
-    document.getElementById(
-        "supplierFoot"
-    );
-
-const pdfButton =
-    document.getElementById(
-        "pdfButton"
-    );
-
-
-/* ============================================================
-   STATE
-   ============================================================ */
-
-let authToken =
-    sessionStorage.getItem(
-        "outstanding_auth_token"
-    );
-
-let buyers = [];
-
-let filteredBuyers = [];
-
-let selectedBuyer = "";
-
-let currentBuyerData = null;
-
-
-/* ============================================================
-   NUMBER FORMAT
-   ============================================================ */
-
-function formatIndianNumber(value) {
-
-    return Number(value || 0)
-        .toLocaleString(
-            "en-IN",
-            {
-                maximumFractionDigits: 2
-            }
-        );
-
-}
-
-
-/* ============================================================
-   STATUS
-   ============================================================ */
-
-function setStatus(
-    message,
-    isError = false
-) {
-
-    statusBox.textContent =
-        message;
-
-    statusBox.classList.toggle(
-        "error",
-        isError
-    );
-
-}
-
-
-/* ============================================================
-   LOGIN
-   ============================================================ */
-
-loginButton.addEventListener(
-    "click",
-    login
-);
-
-
-pinInput.addEventListener(
-    "keydown",
-    function(event) {
-
-        if (
-            event.key === "Enter"
-        ) {
-
-            login();
-
-        }
-
-    }
-);
-
-
-async function login() {
-
-    const pin =
-        pinInput.value.trim();
-
-
-    if (
-        pin.length !== 4
-    ) {
-
-        loginError.textContent =
-            "Please enter the 4-digit PIN.";
-
-        return;
-
-    }
-
-
-    loginButton.disabled =
-        true;
-
-    loginButton.textContent =
-        "Checking...";
-
-    loginError.textContent =
-        "";
-
-
-    try {
-
-        const response =
-            await fetch(
-                API_URL +
-                "?action=login&pin=" +
-                encodeURIComponent(pin)
-            );
-
-
-        const data =
-            await response.json();
-
-
-        if (
-            !data.success
-            ||
-            !data.token
-        ) {
-
-            throw new Error(
-                data.error ||
-                "Invalid PIN"
-            );
-
-        }
-
-
-        // Store token only for this
-        // browser/tab session.
-
-        sessionStorage.setItem(
-            "outstanding_auth_token",
-            data.token
-        );
-
-
-        authToken =
-            data.token;
-
-
-        showApp();
-
-
-        await loadBuyers();
-
-    }
-
-
-    catch (error) {
-
-        console.error(error);
-
-        loginError.textContent =
-            "Incorrect PIN. Please try again.";
-
-        pinInput.value =
-            "";
-
-        pinInput.focus();
-
-    }
-
-
-    finally {
-
-        loginButton.disabled =
-            false;
-
-        loginButton.textContent =
-            "Unlock";
-
-    }
-
-}
-
-
-/* ============================================================
-   SHOW APP
-   ============================================================ */
-
-function showApp() {
-
-    loginScreen.style.display =
-        "none";
-
-    app.style.display =
-        "block";
-
-}
-
-
-/* ============================================================
-   AUTHENTICATED API REQUEST
-   ============================================================ */
-
-async function apiRequest(
-    action,
-    parameters = {}
-) {
-
-    if (!authToken) {
-
-        throw new Error(
-            "AUTH_REQUIRED"
-        );
-
-    }
-
-
-    const query =
-        new URLSearchParams();
-
-
-    query.set(
-        "action",
-        action
-    );
-
-
-    query.set(
-        "token",
-        authToken
-    );
-
-
-    Object.keys(parameters)
-        .forEach(
-            function(key) {
-
-                query.set(
-                    key,
-                    parameters[key]
-                );
-
-            }
-        );
-
-
-    const response =
-        await fetch(
-            API_URL +
-            "?" +
-            query.toString()
-        );
-
-
-    if (!response.ok) {
-
-        throw new Error(
-            "Server returned " +
-            response.status
-        );
-
-    }
-
-
-    const data =
-        await response.json();
-
-
-    if (
-        data.code ===
-        "AUTH_REQUIRED"
-    ) {
-
-        // Session expired.
-        // Remove the token and
-        // return to PIN screen.
-
-        sessionStorage.removeItem(
-            "outstanding_auth_token"
-        );
-
-        authToken =
-            null;
-
-        showLoginScreen();
-
-        throw new Error(
-            "AUTH_REQUIRED"
-        );
-
-    }
-
-
-    if (data.error) {
-
-        throw new Error(
-            data.error
-        );
-
-    }
-
-
-    return data;
-
-}
-
-
-/* ============================================================
-   SHOW LOGIN SCREEN
-   ============================================================ */
-
-function showLoginScreen() {
-
-    app.style.display =
-        "none";
-
-    loginScreen.style.display =
-        "flex";
-
-    pinInput.value =
-        "";
-
-    loginError.textContent =
-        "";
-
-    pinInput.focus();
-
-}
-
-
-/* ============================================================
-   LOAD BUYERS
-   ============================================================ */
-
-async function loadBuyers() {
-
-    try {
-
-        setStatus(
-            "Loading buyers..."
-        );
-
-
-        const data =
-            await apiRequest(
-                "buyers"
-            );
-
-
-        buyers =
-            data.buyers || [];
-
-
-        filteredBuyers =
-            [...buyers];
-
-
-        renderBuyerList(
-            filteredBuyers
-        );
-
-
-        setStatus(
-            buyers.length +
-            " buyers loaded"
-        );
-
-    }
-
-
-    catch (error) {
-
-        console.error(error);
-
-
-        if (
-            error.message ===
-            "AUTH_REQUIRED"
-        ) {
-
-            return;
-
-        }
-
-
-        setStatus(
-            "Unable to connect to backend: " +
-            error.message,
-            true
-        );
-
-
-        buyerList.innerHTML = `
-
-            <div class="no-buyers">
-                Unable to load buyers.
-            </div>
-
-        `;
-
-    }
-
-}
-
-
-/* ============================================================
-   RENDER BUYER LIST
-   ============================================================ */
-
-function renderBuyerList(
-    list
-) {
-
-    buyerList.innerHTML =
-        "";
-
-
-    if (!list.length) {
-
-        buyerList.innerHTML = `
-
-            <div class="no-buyers">
-                No buyers found.
-            </div>
-
-        `;
-
-        return;
-
-    }
-
-
-    list.forEach(
-        function(buyer) {
-
-            const item =
-                document.createElement(
-                    "div"
-                );
-
-
-            item.className =
-                "buyer-item";
-
-
-            if (
-                buyer ===
-                selectedBuyer
-            ) {
-
-                item.classList.add(
-                    "selected"
-                );
-
-            }
-
-
-            item.textContent =
-                buyer;
-
-
-            item.addEventListener(
-                "click",
-                function() {
-
-                    selectBuyer(
-                        buyer
-                    );
-
-                }
-            );
-
-
-            buyerList.appendChild(
-                item
-            );
-
-        }
-    );
-
-}
-
-
-/* ============================================================
-   SELECT BUYER
-   ============================================================ */
-
-function selectBuyer(
-    buyer
-) {
-
-    selectedBuyer =
-        buyer;
-
-
-    buyerSearch.value =
-        buyer;
-
-
-    loadButton.disabled =
-        false;
-
-
-    renderBuyerList(
-        filteredBuyers
-    );
-
-
-    setStatus(
-        "Buyer selected: " +
-        buyer
-    );
-
-}
-
-
-/* ============================================================
-   SEARCH
-   ============================================================ */
-
-buyerSearch.addEventListener(
-    "input",
-    function() {
-
-        const query =
-            buyerSearch.value
-                .trim()
-                .toLowerCase();
-
-
-        selectedBuyer =
-            "";
-
-
-        filteredBuyers =
-            buyers.filter(
-                function(buyer) {
-
-                    return buyer
-                        .toLowerCase()
-                        .includes(query);
-
-                }
-            );
-
-
-        renderBuyerList(
-            filteredBuyers
-        );
-
-
-        loadButton.disabled =
-            true;
-
-
-        if (query === "") {
-
-            setStatus(
-                buyers.length +
-                " buyers loaded"
-            );
-
-        }
-        else {
-
-            setStatus(
-                filteredBuyers.length +
-                " matching buyers"
-            );
-
-        }
-
-    }
-);
-
-
-/* ============================================================
-   CLEAR SEARCH
-   ============================================================ */
-
-clearSearch.addEventListener(
-    "click",
-    function() {
-
-        buyerSearch.value =
-            "";
-
-        selectedBuyer =
-            "";
-
-        filteredBuyers =
-            [...buyers];
-
-        renderBuyerList(
-            filteredBuyers
-        );
-
-        loadButton.disabled =
-            true;
-
-        buyerSearch.focus();
-
-    }
-);
-
-
-/* ============================================================
-   LOAD BUYER
-   ============================================================ */
-
-loadButton.addEventListener(
-    "click",
-    loadBuyer
-);
-
-
-async function loadBuyer() {
-
-    if (!selectedBuyer) {
-
-        setStatus(
-            "Please select a buyer.",
-            true
-        );
-
-        return;
-
-    }
-
-
-    try {
-
-        loadButton.disabled =
-            true;
-
-
-        setStatus(
-            "Loading outstanding..."
-        );
-
-
-        const data =
-            await apiRequest(
-                "buyer",
-                {
-                    name:
-                        selectedBuyer
-                }
-            );
-
-
-        currentBuyerData =
-            data;
-
-
-        renderReport(
-            data
-        );
-
-
-        setStatus(
-            "Report loaded"
-        );
-
-    }
-
-
-    catch (error) {
-
-        console.error(error);
-
-
-        if (
-            error.message ===
-            "AUTH_REQUIRED"
-        ) {
-
-            return;
-
-        }
-
-
-        setStatus(
-            "Unable to load buyer: " +
-            error.message,
-            true
-        );
-
-    }
-
-
-    finally {
-
-        loadButton.disabled =
-            false;
-
-    }
-
-}
-
-
-/* ============================================================
-   RENDER REPORT
-   ============================================================ */
-
-function renderReport(
-    data
-) {
-
-    report.classList.remove(
-        "hidden"
-    );
-
-
-    buyerTitle.textContent =
-        data.buyer;
-
-
-    totalOutstanding.textContent =
-        "₹" +
-        formatIndianNumber(
-            data.total_outstanding
-        );
-
-
-    billCount.textContent =
-        data.bill_count;
-
-
-    renderBills(
-        data.bills || []
-    );
-
-
-    renderSupplierSummary(
-        data.supplier_summary || []
-    );
-
-
-    window.scrollTo({
-
-        top:
-            report.offsetTop - 10,
-
-        behavior:
-            "smooth"
-
-    });
-
-}
-
-
-/* ============================================================
-   RENDER BILLS
-   ============================================================ */
-
-function renderBills(
-    bills
-) {
-
-    billBody.innerHTML =
-        "";
-
-
-    let total = 0;
-
-
-    bills.forEach(
-        function(bill, index) {
-
-            const amount =
-                Number(
-                    bill.Amount || 0
-                );
-
-
-            const days =
-                Number(
-                    bill["Days Due"] || 0
-                );
-
-
-            total +=
-                amount;
-
-
-            const row =
-                document.createElement(
-                    "tr"
-                );
-
-
-            if (days > 120) {
-
-                row.classList.add(
-                    "overdue"
-                );
-
-            }
-
-
-            row.innerHTML = `
-
-                <td class="center">
-                    ${index + 1}
-                </td>
-
-                <td>
-                    ${escapeHtml(
-                        bill["Mumbai Party"] || ""
-                    )}
-                </td>
-
-                <td class="center">
-                    ${escapeHtml(
-                        String(
-                            bill["Bill Number"] || ""
-                        )
-                    )}
-                </td>
-
-                <td class="center">
-                    ${escapeHtml(
-                        bill["Bill Date"] || ""
-                    )}
-                </td>
-
-                <td class="amount">
-                    ${formatIndianNumber(
-                        amount
-                    )}
-                </td>
-
-                <td class="days">
-                    ${days}
-                </td>
-
-            `;
-
-
-            billBody.appendChild(
-                row
-            );
-
-        }
-    );
-
-
-    billFoot.innerHTML = `
-
-        <tr class="total-row">
-
-            <td></td>
-            <td></td>
-            <td></td>
-
-            <td style="text-align:right;">
-                Grand Total
-            </td>
-
-            <td class="amount">
-                ${formatIndianNumber(
-                    total
-                )}
-            </td>
-
-            <td></td>
-
-        </tr>
-
-    `;
-
-}
-
-
-/* ============================================================
-   SUPPLIER SUMMARY
-   ============================================================ */
-
-function renderSupplierSummary(
-    suppliers
-) {
-
-    supplierBody.innerHTML =
-        "";
-
-
-    let total = 0;
-
-
-    suppliers.forEach(
-        function(item) {
-
-            const amount =
-                Number(
-                    item.total || 0
-                );
-
-
-            total +=
-                amount;
-
-
-            const row =
-                document.createElement(
-                    "tr"
-                );
-
-
-            row.innerHTML = `
-
-                <td>
-                    ${escapeHtml(
-                        item.supplier || ""
-                    )}
-                </td>
-
-                <td class="amount">
-                    ${formatIndianNumber(
-                        amount
-                    )}
-                </td>
-
-            `;
-
-
-            supplierBody.appendChild(
-                row
-            );
-
-        }
-    );
-
-
-    supplierFoot.innerHTML = `
-
-        <tr class="total-row">
-
-            <td>
-                Grand Total
-            </td>
-
-            <td class="amount">
-                ${formatIndianNumber(
-                    total
-                )}
-            </td>
-
-        </tr>
-
-    `;
-
-}
-
-
-/* ============================================================
-   CREATE PDF
-   ============================================================ */
-
-pdfButton.addEventListener(
-    "click",
-    sharePDF
-);
-
-
 async function sharePDF() {
 
     if (!currentBuyerData) {
-
         return;
-
     }
-
 
     try {
 
-        pdfButton.disabled =
-            true;
+        pdfButton.disabled = true;
+        pdfButton.textContent = "Creating PDF...";
 
+        const { jsPDF } = window.jspdf;
 
-        pdfButton.textContent =
-            "Creating PDF...";
+        const data = currentBuyerData;
 
-
-        const {
-            jsPDF
-        } =
-            window.jspdf;
-
-
-        const data =
-            currentBuyerData;
-
-
-        const doc =
-            new jsPDF({
-
-                orientation:
-                    "portrait",
-
-                unit:
-                    "mm",
-
-                format:
-                    "a4"
-
-            });
+        const doc = new jsPDF({
+            orientation: "portrait",
+            unit: "mm",
+            format: "a4"
+        });
 
 
         const buyerName =
-            data.buyer ||
-            "Buyer";
+            data.buyer || "Buyer";
 
 
         const fileName =
-            buyerName +
-            " Outstanding List.pdf";
+            buyerName + " Outstanding List.pdf";
+
+
+        // ====================================================
+        // PAGE / LAYOUT CONSTANTS
+        // ====================================================
+
+        const pageWidth = 210;
+
+        const leftMargin = 10;
+
+        const tableWidth = 190;
 
 
         // ====================================================
@@ -2126,63 +48,7 @@ async function sharePDF() {
             "bold"
         );
 
-        doc.setFontSize(
-            16
-        );
-
-        doc.text(
-            "Outstanding List",
-            105,
-            12,
-            {
-                align:
-                    "center"
-            }
-        );
-
-
-        // ====================================================
-        // BUYER
-        // ====================================================
-
-        doc.setFillColor(
-            21,
-            101,
-            192
-        );
-
-
-        doc.rect(
-            10,
-            16,
-            190,
-            9,
-            "F"
-        );
-
-
-        doc.setTextColor(
-            255,
-            255,
-            255
-        );
-
-
-        doc.setFontSize(
-            12
-        );
-
-
-        doc.text(
-            buyerName,
-            105,
-            22,
-            {
-                align:
-                    "center"
-            }
-        );
-
+        doc.setFontSize(16);
 
         doc.setTextColor(
             0,
@@ -2190,9 +56,65 @@ async function sharePDF() {
             0
         );
 
+        doc.text(
+            "Outstanding List",
+            pageWidth / 2,
+            12,
+            {
+                align: "center"
+            }
+        );
+
 
         // ====================================================
-        // DATE / CONTACT
+        // BUYER NAME
+        //
+        // Keep our current Buyer Name style:
+        // BLUE BACKGROUND + WHITE TEXT
+        // ====================================================
+
+        doc.setFillColor(
+            173,
+            216,
+            230
+        );
+
+        doc.rect(
+            27.5,
+            16,
+            155,
+            6,
+            "F"
+        );
+
+
+        doc.setFont(
+            "helvetica",
+            "bold"
+        );
+
+        doc.setFontSize(11);
+
+        doc.setTextColor(
+            255,
+            255,
+            255
+        );
+
+        doc.text(
+            buyerName,
+            pageWidth / 2,
+            20.3,
+            {
+                align: "center"
+            }
+        );
+
+
+        // ====================================================
+        // DATE + PK AGENCY
+        //
+        // Same placement as reference.
         // ====================================================
 
         const today =
@@ -2202,62 +124,70 @@ async function sharePDF() {
                 );
 
 
+        doc.setTextColor(
+            0,
+            0,
+            0
+        );
+
         doc.setFont(
             "helvetica",
-            "normal"
+            "bold"
         );
 
+        doc.setFontSize(9);
 
-        doc.setFontSize(
-            8
-        );
 
+        // Date
 
         doc.text(
-            today +
-            "    PK AGENCY - 9425436227, 9406600197",
-            105,
+            today,
+            55,
             30,
             {
-                align:
-                    "center"
+                align: "center"
+            }
+        );
+
+
+        // PK Agency
+
+        doc.text(
+            "PK AGENCY - 9425436227, 9406600197",
+            150,
+            30,
+            {
+                align: "center"
             }
         );
 
 
         // ====================================================
-        // BILL TABLE
+        // BILL TABLE DATA
         // ====================================================
 
         const billRows =
-            data.bills.map(
-                function(
-                    bill,
-                    index
-                ) {
+            (data.bills || []).map(
+                function (bill, index) {
 
                     return [
 
-                        index + 1,
+                        String(index + 1),
 
-                        bill["Mumbai Party"]
-                            || "",
+                        bill["Mumbai Party"] || "",
 
                         String(
-                            bill["Bill Number"]
-                            || ""
+                            bill["Bill Number"] || ""
                         ),
 
-                        bill["Bill Date"]
-                            || "",
+                        bill["Bill Date"] || "",
 
                         formatIndianNumber(
                             bill.Amount
                         ),
 
                         String(
-                            bill["Days Due"]
-                            || 0
+                            bill["Days Due"] || 0
                         )
 
                     ];
@@ -2268,184 +198,250 @@ async function sharePDF() {
 
         const total =
             Number(
-                data.total_outstanding
-                || 0
+                data.total_outstanding || 0
             );
 
 
+        // ====================================================
+        // BILL TABLE
+        // ====================================================
+
         doc.autoTable({
 
-            startY:
-                34,
+            startY: 34,
+
+            margin: {
+                left: leftMargin,
+                right: leftMargin
+            },
+
+            tableWidth: tableWidth,
 
             head: [[
-
                 "S.No",
                 "Supplier",
                 "Bill Number",
                 "Bill Date",
                 "Amount",
                 "Days Due"
-
             ]],
 
-            body:
-                billRows,
+            body: billRows,
 
             foot: [[
-
                 "",
                 "",
                 "",
                 "Grand Total",
-
-                formatIndianNumber(
-                    total
-                ),
-
+                formatIndianNumber(total),
                 ""
-
             ]],
 
-            theme:
-                "grid",
+            theme: "grid",
 
             styles: {
 
-                font:
-                    "helvetica",
+                font: "helvetica",
 
-                fontSize:
-                    7,
+                fontSize: 7.5,
 
-                cellPadding:
-                    2,
+                cellPadding: {
+                    top: 1.5,
+                    bottom: 1.5,
+                    left: 2,
+                    right: 2
+                },
 
-                lineColor:
-                    [170,170,170],
+                textColor: [
+                    0,
+                    0,
+                    0
+                ],
 
-                lineWidth:
-                    .15
+                lineColor: [
+                    170,
+                    170,
+                    170
+                ],
+
+                lineWidth: 0.15,
+
+                valign: "middle"
 
             },
 
             headStyles: {
 
-                fillColor:
-                    [217,234,247],
+                fillColor: [
+                    255,
+                    255,
+                    255
+                ],
 
-                textColor:
-                    [0,0,0],
+                textColor: [
+                    0,
+                    0,
+                    0
+                ],
 
-                fontStyle:
-                    "bold",
+                fontStyle: "bold",
 
-                halign:
-                    "center"
+                fontSize: 8,
+
+                halign: "center",
+
+                lineColor: [
+                    170,
+                    170,
+                    170
+                ],
+
+                lineWidth: 0.15
 
             },
 
             footStyles: {
 
-                fillColor:
-                    [232,232,232],
+                fillColor: [
+                    232,
+                    232,
+                    232
+                ],
 
-                textColor:
-                    [0,0,0],
+                textColor: [
+                    0,
+                    0,
+                    0
+                ],
 
-                fontStyle:
-                    "bold"
+                fontStyle: "bold",
+
+                fontSize: 8
 
             },
 
             columnStyles: {
 
+                // S.No
                 0: {
-                    halign:
-                        "center",
 
-                    cellWidth:
-                        12
+                    cellWidth: 14,
+
+                    halign: "center"
+
                 },
 
+                // Supplier
                 1: {
-                    cellWidth:
-                        48
+
+                    cellWidth: 66,
+
+                    halign: "left"
+
                 },
 
+                // Bill Number
                 2: {
-                    halign:
-                        "center",
 
-                    cellWidth:
-                        25
+                    cellWidth: 31,
+
+                    halign: "left"
+
                 },
 
+                // Bill Date
                 3: {
-                    halign:
-                        "center",
 
-                    cellWidth:
-                        24
+                    cellWidth: 30,
+
+                    halign: "left"
+
                 },
 
+                // Amount
                 4: {
-                    halign:
-                        "right",
 
-                    cellWidth:
-                        35
+                    cellWidth: 29,
+
+                    halign: "right"
+
                 },
 
+                // Days Due
                 5: {
-                    halign:
-                        "right",
 
-                    cellWidth:
-                        20
+                    cellWidth: 20,
+
+                    halign: "right"
+
                 }
 
             },
 
+
+            // =================================================
+            // RED TEXT FOR BILLS > 120 DAYS
+            //
+            // Exactly like reference.
+            // =================================================
+
             didParseCell:
-                function(
-                    hookData
-                ) {
+                function (hookData) {
 
                     if (
 
-                        hookData.section
-                        === "body"
+                        hookData.section === "body"
 
                         &&
 
-                        hookData.column.index
-                        === 5
+                        hookData.column.index !== undefined
 
                     ) {
 
-                        const days =
-                            Number(
-                                data.bills[
-                                    hookData.row.index
-                                ]["Days Due"]
-                                || 0
-                            );
+                        const rowIndex =
+                            hookData.row.index;
 
 
                         if (
-                            days > 120
+                            data.bills[rowIndex]
                         ) {
 
-                            hookData.cell.styles.textColor =
-                                [220,38,38];
+                            const days =
+                                Number(
+                                    data.bills[rowIndex][
+                                        "Days Due"
+                                    ] || 0
+                                );
 
-                            hookData.cell.styles.fontStyle =
-                                "bold";
+
+                            if (days > 120) {
+
+                                hookData.cell.styles.textColor =
+                                    [
+                                        255,
+                                        0,
+                                        0
+                                    ];
+
+                            }
 
                         }
 
                     }
+
+                },
+
+
+            // =================================================
+            // HEADER / FOOTER
+            // =================================================
+
+            didDrawPage:
+                function () {
+
+                    // Nothing here deliberately.
+                    // This prevents the title/date from
+                    // being duplicated on continuation pages.
 
                 }
 
@@ -2457,13 +453,10 @@ async function sharePDF() {
         // ====================================================
 
         let finalY =
-            doc.lastAutoTable.finalY
-            + 10;
+            doc.lastAutoTable.finalY + 9;
 
 
-        if (
-            finalY > 265
-        ) {
+        if (finalY > 265) {
 
             doc.addPage();
 
@@ -2472,32 +465,41 @@ async function sharePDF() {
         }
 
 
+        // ====================================================
+        // SUPPLIER SUMMARY TITLE
+        // ====================================================
+
         doc.setFont(
             "helvetica",
             "bold"
         );
 
+        doc.setFontSize(11);
 
-        doc.setFontSize(
-            11
+        doc.setTextColor(
+            0,
+            0,
+            0
         );
-
 
         doc.text(
             "Supplier Wise Summary",
-            10,
+            leftMargin,
             finalY
         );
 
 
+        // ====================================================
+        // SUPPLIER SUMMARY DATA
+        // ====================================================
+
         const supplierRows =
-            data.supplier_summary.map(
-                function(item) {
+            (data.supplier_summary || []).map(
+                function (item) {
 
                     return [
 
-                        item.supplier
-                            || "",
+                        item.supplier || "",
 
                         formatIndianNumber(
                             item.total
@@ -2513,93 +515,125 @@ async function sharePDF() {
 
             "Grand Total",
 
-            formatIndianNumber(
-                total
-            )
+            formatIndianNumber(total)
 
         ]);
 
 
+        // ====================================================
+        // SUPPLIER SUMMARY TABLE
+        // ====================================================
+
         doc.autoTable({
 
-            startY:
-                finalY + 4,
+            startY: finalY + 4,
+
+            margin: {
+                left: leftMargin,
+                right: leftMargin
+            },
+
+            tableWidth: 170,
 
             head: [[
-
                 "Supplier",
                 "Total Amount"
-
             ]],
 
-            body:
-                supplierRows,
+            body: supplierRows,
 
-            theme:
-                "grid",
+            theme: "grid",
 
             styles: {
 
-                fontSize:
-                    8,
+                font: "helvetica",
 
-                cellPadding:
-                    2
+                fontSize: 8,
+
+                cellPadding: {
+                    top: 1.8,
+                    bottom: 1.8,
+                    left: 2,
+                    right: 2
+                },
+
+                textColor: [
+                    0,
+                    0,
+                    0
+                ],
+
+                lineColor: [
+                    170,
+                    170,
+                    170
+                ],
+
+                lineWidth: 0.15
 
             },
 
             headStyles: {
 
-                fillColor:
-                    [217,234,247],
+                fillColor: [
+                    255,
+                    255,
+                    255
+                ],
 
-                textColor:
-                    [0,0,0],
+                textColor: [
+                    0,
+                    0,
+                    0
+                ],
 
-                fontStyle:
-                    "bold"
+                fontStyle: "bold",
+
+                halign: "center"
 
             },
 
             columnStyles: {
 
                 0: {
-                    cellWidth:
-                        110
+
+                    cellWidth: 110,
+
+                    halign: "left"
+
                 },
 
                 1: {
 
-                    halign:
-                        "right",
+                    cellWidth: 60,
 
-                    cellWidth:
-                        60
+                    halign: "right"
 
                 }
 
             },
 
+
             didParseCell:
-                function(
-                    hookData
-                ) {
+                function (hookData) {
 
                     if (
 
-                        hookData.section
-                        === "body"
+                        hookData.section === "body"
 
                         &&
 
-                        hookData.row.index
-                        ===
+                        hookData.row.index ===
                         supplierRows.length - 1
 
                     ) {
 
                         hookData.cell.styles.fillColor =
-                            [232,232,232];
+                            [
+                                232,
+                                232,
+                                232
+                            ];
 
                         hookData.cell.styles.fontStyle =
                             "bold";
@@ -2612,34 +646,26 @@ async function sharePDF() {
 
 
         // ====================================================
-        // CREATE BLOB
+        // CREATE PDF BLOB
         // ====================================================
 
         const pdfBlob =
-            doc.output(
-                "blob"
-            );
+            doc.output("blob");
 
 
         const pdfFile =
             new File(
-
-                [
-                    pdfBlob
-                ],
-
+                [pdfBlob],
                 fileName,
-
                 {
                     type:
                         "application/pdf"
                 }
-
             );
 
 
         // ====================================================
-        // IPHONE SHARE
+        // SHARE ON MOBILE
         // ====================================================
 
         if (
@@ -2684,7 +710,7 @@ async function sharePDF() {
         else {
 
             // =================================================
-            // FALLBACK DOWNLOAD
+            // DESKTOP / FALLBACK DOWNLOAD
             // =================================================
 
             const url =
@@ -2732,15 +758,13 @@ async function sharePDF() {
 
     }
 
-
     catch (error) {
 
         console.error(error);
 
 
         if (
-            error.name ===
-            "AbortError"
+            error.name === "AbortError"
         ) {
 
             setStatus(
@@ -2761,11 +785,9 @@ async function sharePDF() {
 
     }
 
-
     finally {
 
-        pdfButton.disabled =
-            false;
+        pdfButton.disabled = false;
 
         pdfButton.textContent =
             "Share PDF";
@@ -2773,73 +795,3 @@ async function sharePDF() {
     }
 
 }
-
-
-/* ============================================================
-   HTML ESCAPE
-   ============================================================ */
-
-function escapeHtml(
-    value
-) {
-
-    return String(value)
-
-        .replace(
-            /&/g,
-            "&amp;"
-        )
-
-        .replace(
-            /</g,
-            "&lt;"
-        )
-
-        .replace(
-            />/g,
-            "&gt;"
-        )
-
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-
-        .replace(
-            /'/g,
-            "&#039;"
-        );
-
-}
-
-
-/* ============================================================
-   START
-   ============================================================ */
-
-if (authToken) {
-
-    // Existing session in this browser.
-    // No PIN required.
-
-    showApp();
-
-    loadBuyers();
-
-}
-
-else {
-
-    // New browser session.
-    // Ask for PIN.
-
-    showLoginScreen();
-
-}
-
-</script>
-
-
-</body>
-
-</html>
