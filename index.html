@@ -2489,13 +2489,13 @@ async function sharePDF() {
 
 
         // =====================================================
-        // BUYER NAME - BLUE BAND
+        // BUYER NAME - OLIVE BAND
         // =====================================================
 
         doc.setFillColor(
-            21,
-            101,
-            192
+            172,
+            191,
+            105
         );
 
         doc.rect(
@@ -2512,12 +2512,12 @@ async function sharePDF() {
             "bold"
         );
 
-        doc.setFontSize(13);
+        doc.setFontSize(15);
 
         doc.setTextColor(
-            255,
-            255,
-            255
+            0,
+            0,
+            0
         );
 
         doc.text(
@@ -2574,7 +2574,7 @@ async function sharePDF() {
             "bold"
         );
 
-        doc.setFontSize(11);
+        doc.setFontSize(14);
 
         doc.setTextColor(
             0,
@@ -2731,11 +2731,11 @@ async function sharePDF() {
 
                 /*
                  * IMPORTANT:
-                 * 11 pt body font.
+                 * 13 pt body font.
                  */
 
                 fontSize:
-                    11,
+                    13,
 
                 cellPadding: {
 
@@ -2781,16 +2781,16 @@ async function sharePDF() {
             headStyles: {
 
                 fillColor:
-                    [31, 105, 190],
+                    [245, 194, 206],
 
                 textColor:
-                    [255, 255, 255],
+                    [0, 0, 0],
 
                 fontStyle:
                     "bold",
 
                 fontSize:
-                    11.5,
+                    13,
 
                 halign:
                     "center",
@@ -2818,11 +2818,11 @@ async function sharePDF() {
             footStyles: {
 
                 /*
-                 * Bright yellow highlighted total.
+                 * Light yellow highlighted total.
                  */
 
                 fillColor:
-                    [255, 235, 59],
+                    [243, 245, 194],
 
                 textColor:
                     [0, 0, 0],
@@ -2831,7 +2831,7 @@ async function sharePDF() {
                     "bold",
 
                 fontSize:
-                    11
+                    13
 
             },
 
@@ -2970,9 +2970,6 @@ async function sharePDF() {
                                     0
                                 ];
 
-                            hookData.cell.styles.fontStyle =
-                                "bold";
-
                         }
 
                     }
@@ -2989,9 +2986,9 @@ async function sharePDF() {
 
                         hookData.cell.styles.fillColor =
                             [
-                                255,
-                                235,
-                                59
+                                243,
+                                245,
+                                194
                             ];
 
                         hookData.cell.styles.textColor =
@@ -3043,7 +3040,7 @@ async function sharePDF() {
         );
 
         doc.setFontSize(
-            12
+            13
         );
 
         doc.setTextColor(
@@ -3143,7 +3140,7 @@ async function sharePDF() {
                     "helvetica",
 
                 fontSize:
-                    11,
+                    13,
 
                 cellPadding: {
 
@@ -3183,16 +3180,16 @@ async function sharePDF() {
             headStyles: {
 
                 fillColor:
-                    [31, 105, 190],
+                    [228, 201, 238],
 
                 textColor:
-                    [255, 255, 255],
+                    [0, 0, 0],
 
                 fontStyle:
                     "bold",
 
                 fontSize:
-                    11.5,
+                    13,
 
                 halign:
                     "center"
@@ -3243,15 +3240,15 @@ async function sharePDF() {
                         ) {
 
                             /*
-                             * Yellow highlighted
+                             * Light Yellow highlighted
                              * Grand Total.
                              */
 
                             hookData.cell.styles.fillColor =
                                 [
-                                    255,
-                                    235,
-                                    59
+                                    243,
+                                    245,
+                                    194
                                 ];
 
                             hookData.cell.styles.textColor =
