@@ -10,7 +10,24 @@
     content="width=device-width, initial-scale=1.0"
 >
 
+<meta
+    name="apple-mobile-web-app-capable"
+    content="yes"
+>
+
+<meta
+    name="apple-mobile-web-app-status-bar-style"
+    content="default"
+>
+
 <title>Outstanding App</title>
+
+
+<!-- PDF libraries -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+
 
 <style>
 
@@ -35,9 +52,18 @@ body {
 }
 
 
+/* =========================================================
+   HEADER
+   ========================================================= */
+
 .header {
 
-    background: #1565c0;
+    background:
+        linear-gradient(
+            135deg,
+            #1565c0,
+            #0d47a1
+        );
 
     color: white;
 
@@ -47,8 +73,8 @@ body {
 
     box-shadow:
         0 2px 8px rgba(0,0,0,.15);
-}
 
+}
 
 .header h1 {
 
@@ -57,7 +83,6 @@ body {
     font-size: 22px;
 
 }
-
 
 .header p {
 
@@ -70,15 +95,24 @@ body {
 }
 
 
+/* =========================================================
+   CONTAINER
+   ========================================================= */
+
 .container {
 
     max-width: 900px;
 
     margin: auto;
 
-    padding: 16px;
+    padding: 14px;
+
 }
 
+
+/* =========================================================
+   CARD
+   ========================================================= */
 
 .card {
 
@@ -88,12 +122,17 @@ body {
 
     padding: 16px;
 
-    margin-bottom: 16px;
+    margin-bottom: 15px;
 
     box-shadow:
         0 2px 8px rgba(0,0,0,.08);
+
 }
 
+
+/* =========================================================
+   SEARCH
+   ========================================================= */
 
 label {
 
@@ -106,28 +145,165 @@ label {
 }
 
 
-input,
-select {
+.search-box {
+
+    position: relative;
+
+}
+
+
+#buyerSearch {
 
     width: 100%;
 
-    padding: 13px;
+    padding: 13px 42px 13px 13px;
 
-    border: 1px solid #d1d5db;
+    border:
+        1px solid #cbd5e1;
 
-    border-radius: 8px;
+    border-radius: 9px;
 
     font-size: 16px;
 
+    outline: none;
+
     background: white;
+
 }
 
+
+#buyerSearch:focus {
+
+    border-color:
+        #1565c0;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(21,101,192,.12);
+
+}
+
+
+.clear-search {
+
+    position: absolute;
+
+    right: 10px;
+
+    top: 50%;
+
+    transform:
+        translateY(-50%);
+
+    width: 28px;
+
+    height: 28px;
+
+    border-radius: 50%;
+
+    border: none;
+
+    background: #e5e7eb;
+
+    color: #374151;
+
+    font-size: 18px;
+
+    line-height: 28px;
+
+    padding: 0;
+
+}
+
+
+/* =========================================================
+   BUYER LIST
+   ========================================================= */
+
+.buyer-list {
+
+    margin-top: 9px;
+
+    border:
+        1px solid #d1d5db;
+
+    border-radius: 9px;
+
+    background: white;
+
+    max-height: 270px;
+
+    overflow-y: auto;
+
+    -webkit-overflow-scrolling: touch;
+
+}
+
+
+.buyer-item {
+
+    padding: 13px 12px;
+
+    border-bottom:
+        1px solid #edf0f3;
+
+    font-size: 15px;
+
+    cursor: pointer;
+
+    -webkit-tap-highlight-color:
+        rgba(21,101,192,.12);
+
+}
+
+
+.buyer-item:last-child {
+
+    border-bottom: none;
+
+}
+
+
+.buyer-item:active {
+
+    background: #e8f1ff;
+
+}
+
+
+.buyer-item.selected {
+
+    background: #dbeafe;
+
+    color: #0d47a1;
+
+    font-weight: 700;
+
+}
+
+
+.no-buyers {
+
+    padding: 18px;
+
+    text-align: center;
+
+    color: #6b7280;
+
+    font-size: 14px;
+
+}
+
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
 
 button {
 
     border: none;
 
-    border-radius: 8px;
+    border-radius: 9px;
 
     padding: 12px 16px;
 
@@ -136,6 +312,7 @@ button {
     font-weight: 600;
 
     cursor: pointer;
+
 }
 
 
@@ -148,6 +325,7 @@ button {
     width: 100%;
 
     margin-top: 12px;
+
 }
 
 
@@ -167,8 +345,20 @@ button {
     width: 100%;
 
     margin-top: 10px;
+
 }
 
+
+.pdf-button:disabled {
+
+    background: #9ca3af;
+
+}
+
+
+/* =========================================================
+   STATUS
+   ========================================================= */
 
 .status {
 
@@ -192,8 +382,13 @@ button {
     background: #fee2e2;
 
     color: #b91c1c;
+
 }
 
+
+/* =========================================================
+   SUMMARY
+   ========================================================= */
 
 .summary {
 
@@ -205,6 +400,7 @@ button {
     gap: 10px;
 
     margin-top: 14px;
+
 }
 
 
@@ -212,7 +408,8 @@ button {
 
     background: #f8fafc;
 
-    border: 1px solid #e5e7eb;
+    border:
+        1px solid #e5e7eb;
 
     border-radius: 10px;
 
@@ -241,11 +438,16 @@ button {
 }
 
 
+/* =========================================================
+   TABLE
+   ========================================================= */
+
 .table-wrap {
 
     overflow-x: auto;
 
     margin-top: 15px;
+
 }
 
 
@@ -253,11 +455,13 @@ table {
 
     width: 100%;
 
-    border-collapse: collapse;
+    border-collapse:
+        collapse;
 
     min-width: 650px;
 
     font-size: 13px;
+
 }
 
 
@@ -269,9 +473,11 @@ th {
 
     padding: 9px;
 
-    border: 1px solid #cbd5e1;
+    border:
+        1px solid #cbd5e1;
 
     text-align: center;
+
 }
 
 
@@ -279,7 +485,8 @@ td {
 
     padding: 8px;
 
-    border: 1px solid #d1d5db;
+    border:
+        1px solid #d1d5db;
 
 }
 
@@ -287,6 +494,7 @@ td {
 td.center {
 
     text-align: center;
+
 }
 
 
@@ -294,6 +502,7 @@ td.amount,
 td.days {
 
     text-align: right;
+
 }
 
 
@@ -302,6 +511,7 @@ td.days {
     color: #dc2626;
 
     font-weight: 700;
+
 }
 
 
@@ -310,8 +520,13 @@ td.days {
     background: #e8e8e8;
 
     font-weight: 700;
+
 }
 
+
+/* =========================================================
+   SECTION
+   ========================================================= */
 
 .section-title {
 
@@ -326,18 +541,13 @@ td.days {
 .hidden {
 
     display: none;
+
 }
 
 
-.loading {
-
-    text-align: center;
-
-    padding: 20px;
-
-    color: #6b7280;
-}
-
+/* =========================================================
+   MOBILE
+   ========================================================= */
 
 @media (max-width: 600px) {
 
@@ -355,7 +565,8 @@ td.days {
 
     .summary {
 
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns:
+            1fr 1fr;
 
     }
 
@@ -381,14 +592,18 @@ td.days {
 <div class="container">
 
 
-    <!-- BUYER SELECTION -->
+<!-- =======================================================
+     BUYER SEARCH
+     ======================================================= -->
 
-    <div class="card">
+<div class="card">
 
-        <label for="buyerSearch">
-            Search Buyer
-        </label>
+    <label for="buyerSearch">
+        Search Buyer
+    </label>
 
+
+    <div class="search-box">
 
         <input
             id="buyerSearch"
@@ -398,193 +613,190 @@ td.days {
         >
 
 
-        <select
-            id="buyerSelect"
-            size="6"
-            style="margin-top:10px;"
-        >
-
-            <option>
-                Loading buyers...
-            </option>
-
-        </select>
-
-
         <button
-            id="loadButton"
-            class="primary"
-            disabled
+            id="clearSearch"
+            class="clear-search"
+            type="button"
         >
-            View Outstanding
+            ×
         </button>
 
-
-        <div
-            id="status"
-            class="status"
-        >
-            Connecting to server...
-        </div>
-
     </div>
 
-
-    <!-- REPORT -->
 
     <div
-        id="report"
-        class="hidden"
+        id="buyerList"
+        class="buyer-list"
     >
 
-
-        <div class="card">
-
-            <h2
-                id="buyerTitle"
-                class="section-title"
-            ></h2>
-
-
-            <div class="summary">
-
-                <div class="summary-box">
-
-                    <div class="summary-label">
-                        Total Outstanding
-                    </div>
-
-                    <div
-                        id="totalOutstanding"
-                        class="summary-value"
-                    >
-                    </div>
-
-                </div>
-
-
-                <div class="summary-box">
-
-                    <div class="summary-label">
-                        Number of Bills
-                    </div>
-
-                    <div
-                        id="billCount"
-                        class="summary-value"
-                    >
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <button
-                id="pdfButton"
-                class="pdf-button"
-            >
-                Generate PDF
-            </button>
-
+        <div class="no-buyers">
+            Loading buyers...
         </div>
-
-
-        <!-- BILLS -->
-
-        <div class="card">
-
-            <h2 class="section-title">
-                Outstanding Bills
-            </h2>
-
-
-            <div class="table-wrap">
-
-                <table>
-
-                    <thead>
-
-                        <tr>
-
-                            <th>S.No</th>
-
-                            <th>Supplier</th>
-
-                            <th>Bill Number</th>
-
-                            <th>Bill Date</th>
-
-                            <th>Amount</th>
-
-                            <th>Days Due</th>
-
-                        </tr>
-
-                    </thead>
-
-
-                    <tbody id="billBody">
-
-                    </tbody>
-
-
-                    <tfoot id="billFoot">
-
-                    </tfoot>
-
-                </table>
-
-            </div>
-
-        </div>
-
-
-        <!-- SUPPLIER SUMMARY -->
-
-        <div class="card">
-
-            <h2 class="section-title">
-                Supplier Wise Summary
-            </h2>
-
-
-            <div class="table-wrap">
-
-                <table>
-
-                    <thead>
-
-                        <tr>
-
-                            <th>Supplier</th>
-
-                            <th>Total Amount</th>
-
-                        </tr>
-
-                    </thead>
-
-
-                    <tbody
-                        id="supplierBody"
-                    >
-                    </tbody>
-
-
-                    <tfoot
-                        id="supplierFoot"
-                    >
-                    </tfoot>
-
-                </table>
-
-            </div>
-
-        </div>
-
 
     </div>
+
+
+    <button
+        id="loadButton"
+        class="primary"
+        disabled
+    >
+        View Outstanding
+    </button>
+
+
+    <div
+        id="status"
+        class="status"
+    >
+        Connecting to server...
+    </div>
+
+</div>
+
+
+<!-- =======================================================
+     REPORT
+     ======================================================= -->
+
+<div
+    id="report"
+    class="hidden"
+>
+
+
+<!-- SUMMARY -->
+
+<div class="card">
+
+    <h2
+        id="buyerTitle"
+        class="section-title"
+    ></h2>
+
+
+    <div class="summary">
+
+        <div class="summary-box">
+
+            <div class="summary-label">
+                Total Outstanding
+            </div>
+
+            <div
+                id="totalOutstanding"
+                class="summary-value"
+            ></div>
+
+        </div>
+
+
+        <div class="summary-box">
+
+            <div class="summary-label">
+                Number of Bills
+            </div>
+
+            <div
+                id="billCount"
+                class="summary-value"
+            ></div>
+
+        </div>
+
+    </div>
+
+
+    <button
+        id="pdfButton"
+        class="pdf-button"
+    >
+        Share PDF
+    </button>
+
+</div>
+
+
+<!-- BILLS -->
+
+<div class="card">
+
+    <h2 class="section-title">
+        Outstanding Bills
+    </h2>
+
+
+    <div class="table-wrap">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>S.No</th>
+                    <th>Supplier</th>
+                    <th>Bill Number</th>
+                    <th>Bill Date</th>
+                    <th>Amount</th>
+                    <th>Days Due</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody id="billBody"></tbody>
+
+
+            <tfoot id="billFoot"></tfoot>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+<!-- SUPPLIER SUMMARY -->
+
+<div class="card">
+
+    <h2 class="section-title">
+        Supplier Wise Summary
+    </h2>
+
+
+    <div class="table-wrap">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>Supplier</th>
+                    <th>Total Amount</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody id="supplierBody"></tbody>
+
+
+            <tfoot id="supplierFoot"></tfoot>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+</div>
+
 
 </div>
 
@@ -593,11 +805,11 @@ td.days {
 
 
 // ============================================================
-// CONFIGURATION
+// API
 // ============================================================
 
 const API_URL =
-    "https://script.google.com/macros/s/AKfycbxA-kfhKp1DfL_x4uIr82aWntma7dzqwFvKPzFe4AFuOqT48P0Pm-AsiNYGOUWCSx_I/exec";
+"https://script.google.com/macros/s/AKfycbxA-kfhKp1DfL_x4uIr82aWntma7dzqwFvKPzFe4AFuOqT48P0Pm-AsiNYGOUWCSx_I/exec";
 
 
 // ============================================================
@@ -605,69 +817,74 @@ const API_URL =
 // ============================================================
 
 const buyerSearch =
-    document.getElementById(
-        "buyerSearch"
-    );
+document.getElementById(
+    "buyerSearch"
+);
 
-const buyerSelect =
-    document.getElementById(
-        "buyerSelect"
-    );
+const clearSearch =
+document.getElementById(
+    "clearSearch"
+);
+
+const buyerList =
+document.getElementById(
+    "buyerList"
+);
 
 const loadButton =
-    document.getElementById(
-        "loadButton"
-    );
+document.getElementById(
+    "loadButton"
+);
 
 const statusBox =
-    document.getElementById(
-        "status"
-    );
+document.getElementById(
+    "status"
+);
 
 const report =
-    document.getElementById(
-        "report"
-    );
+document.getElementById(
+    "report"
+);
 
 const buyerTitle =
-    document.getElementById(
-        "buyerTitle"
-    );
+document.getElementById(
+    "buyerTitle"
+);
 
 const totalOutstanding =
-    document.getElementById(
-        "totalOutstanding"
-    );
+document.getElementById(
+    "totalOutstanding"
+);
 
 const billCount =
-    document.getElementById(
-        "billCount"
-    );
+document.getElementById(
+    "billCount"
+);
 
 const billBody =
-    document.getElementById(
-        "billBody"
-    );
+document.getElementById(
+    "billBody"
+);
 
 const billFoot =
-    document.getElementById(
-        "billFoot"
-    );
+document.getElementById(
+    "billFoot"
+);
 
 const supplierBody =
-    document.getElementById(
-        "supplierBody"
-    );
+document.getElementById(
+    "supplierBody"
+);
 
 const supplierFoot =
-    document.getElementById(
-        "supplierFoot"
-    );
+document.getElementById(
+    "supplierFoot"
+);
 
 const pdfButton =
-    document.getElementById(
-        "pdfButton"
-    );
+document.getElementById(
+    "pdfButton"
+);
 
 
 // ============================================================
@@ -675,6 +892,10 @@ const pdfButton =
 // ============================================================
 
 let buyers = [];
+
+let filteredBuyers = [];
+
+let selectedBuyer = "";
 
 let currentBuyerData = null;
 
@@ -685,14 +906,32 @@ let currentBuyerData = null;
 
 function formatIndianNumber(value) {
 
-    const number =
-        Number(value || 0);
+    return Number(value || 0)
+        .toLocaleString(
+            "en-IN",
+            {
+                maximumFractionDigits: 2
+            }
+        );
 
-    return number.toLocaleString(
-        "en-IN",
-        {
-            maximumFractionDigits: 2
-        }
+}
+
+
+// ============================================================
+// STATUS
+// ============================================================
+
+function setStatus(
+    message,
+    isError = false
+) {
+
+    statusBox.textContent =
+        message;
+
+    statusBox.classList.toggle(
+        "error",
+        isError
     );
 
 }
@@ -745,16 +984,18 @@ async function loadBuyers() {
             data.buyers || [];
 
 
+        filteredBuyers =
+            [...buyers];
+
+
         renderBuyerList(
-            buyers
+            filteredBuyers
         );
 
 
         setStatus(
-
             buyers.length +
             " buyers loaded"
-
         );
 
 
@@ -770,28 +1011,44 @@ async function loadBuyers() {
             true
         );
 
+
+        buyerList.innerHTML = `
+
+            <div class="no-buyers">
+
+                Unable to load buyers.
+
+            </div>
+
+        `;
+
     }
 
 }
 
 
 // ============================================================
-// RENDER BUYERS
+// RENDER BUYER LIST
 // ============================================================
 
 function renderBuyerList(
     list
 ) {
 
-    buyerSelect.innerHTML = "";
+    buyerList.innerHTML = "";
 
 
     if (!list.length) {
 
-        buyerSelect.innerHTML =
-            "<option>No buyers found</option>";
+        buyerList.innerHTML = `
 
-        loadButton.disabled = true;
+            <div class="no-buyers">
+
+                No buyers found.
+
+            </div>
+
+        `;
 
         return;
 
@@ -801,32 +1058,88 @@ function renderBuyerList(
     list.forEach(
         function(buyer) {
 
-            const option =
+            const item =
                 document.createElement(
-                    "option"
+                    "div"
                 );
 
-            option.value =
+
+            item.className =
+                "buyer-item";
+
+
+            if (
+                buyer === selectedBuyer
+            ) {
+
+                item.classList.add(
+                    "selected"
+                );
+
+            }
+
+
+            item.textContent =
                 buyer;
 
-            option.textContent =
-                buyer;
 
-            buyerSelect.appendChild(
-                option
+            item.addEventListener(
+                "click",
+                function() {
+
+                    selectBuyer(
+                        buyer
+                    );
+
+                }
+            );
+
+
+            buyerList.appendChild(
+                item
             );
 
         }
     );
 
+}
 
-    loadButton.disabled = false;
+
+// ============================================================
+// SELECT BUYER
+// ============================================================
+
+function selectBuyer(
+    buyer
+) {
+
+    selectedBuyer =
+        buyer;
+
+
+    buyerSearch.value =
+        buyer;
+
+
+    loadButton.disabled =
+        false;
+
+
+    renderBuyerList(
+        filteredBuyers
+    );
+
+
+    setStatus(
+        "Buyer selected: " +
+        buyer
+    );
 
 }
 
 
 // ============================================================
-// SEARCH BUYERS
+// SEARCH
 // ============================================================
 
 buyerSearch.addEventListener(
@@ -839,7 +1152,10 @@ buyerSearch.addEventListener(
                 .toLowerCase();
 
 
-        const filtered =
+        selectedBuyer = "";
+
+
+        filteredBuyers =
             buyers.filter(
                 function(buyer) {
 
@@ -852,33 +1168,60 @@ buyerSearch.addEventListener(
 
 
         renderBuyerList(
-            filtered
+            filteredBuyers
         );
+
+
+        loadButton.disabled =
+            true;
+
+
+        if (query === "") {
+
+            setStatus(
+                buyers.length +
+                " buyers loaded"
+            );
+
+        }
+        else {
+
+            setStatus(
+                filteredBuyers.length +
+                " matching buyers"
+            );
+
+        }
 
     }
 );
 
 
 // ============================================================
-// SELECT BUYER
+// CLEAR SEARCH
 // ============================================================
 
-buyerSelect.addEventListener(
-    "change",
+clearSearch.addEventListener(
+    "click",
     function() {
 
-        if (
-            buyerSelect.value
-            &&
-            buyers.includes(
-                buyerSelect.value
-            )
-        ) {
+        buyerSearch.value =
+            "";
 
-            loadButton.disabled =
-                false;
+        selectedBuyer =
+            "";
 
-        }
+        filteredBuyers =
+            [...buyers];
+
+        renderBuyerList(
+            filteredBuyers
+        );
+
+        loadButton.disabled =
+            true;
+
+        buyerSearch.focus();
 
     }
 );
@@ -896,11 +1239,7 @@ loadButton.addEventListener(
 
 async function loadBuyer() {
 
-    const buyer =
-        buyerSelect.value;
-
-
-    if (!buyer) {
+    if (!selectedBuyer) {
 
         setStatus(
             "Please select a buyer.",
@@ -927,7 +1266,7 @@ async function loadBuyer() {
             API_URL +
             "?action=buyer&name=" +
             encodeURIComponent(
-                buyer
+                selectedBuyer
             );
 
 
@@ -1054,7 +1393,8 @@ function renderBills(
     bills
 ) {
 
-    billBody.innerHTML = "";
+    billBody.innerHTML =
+        "";
 
 
     let total = 0;
@@ -1075,7 +1415,8 @@ function renderBills(
                 );
 
 
-            total += amount;
+            total +=
+                amount;
 
 
             const row =
@@ -1145,9 +1486,7 @@ function renderBills(
         <tr class="total-row">
 
             <td></td>
-
             <td></td>
-
             <td></td>
 
             <td style="text-align:right;">
@@ -1177,7 +1516,8 @@ function renderSupplierSummary(
     suppliers
 ) {
 
-    supplierBody.innerHTML = "";
+    supplierBody.innerHTML =
+        "";
 
 
     let total = 0;
@@ -1192,7 +1532,8 @@ function renderSupplierSummary(
                 );
 
 
-            total += amount;
+            total +=
+                amount;
 
 
             const row =
@@ -1248,16 +1589,16 @@ function renderSupplierSummary(
 
 
 // ============================================================
-// PDF
+// CREATE PDF
 // ============================================================
 
 pdfButton.addEventListener(
     "click",
-    generatePDF
+    sharePDF
 );
 
 
-function generatePDF() {
+async function sharePDF() {
 
     if (!currentBuyerData) {
 
@@ -1266,464 +1607,633 @@ function generatePDF() {
     }
 
 
-    const data =
-        currentBuyerData;
+    try {
 
+        pdfButton.disabled =
+            true;
 
-    let html = `
+        pdfButton.textContent =
+            "Creating PDF...";
 
-<!DOCTYPE html>
 
-<html>
+        const {
+            jsPDF
+        } = window.jspdf;
 
-<head>
 
-<meta charset="UTF-8">
+        const data =
+            currentBuyerData;
 
-<title>
-Outstanding - ${escapeHtml(
-    data.buyer
-)}
-</title>
 
-<style>
+        const doc =
+            new jsPDF({
+                orientation: "portrait",
+                unit: "mm",
+                format: "a4"
+            });
 
-@page {
 
-    size: A4;
+        const buyerName =
+            data.buyer || "Buyer";
 
-    margin: 10mm;
 
-}
+        const fileName =
+            buyerName +
+            " Outstanding List.pdf";
 
-body {
 
-    font-family:
-        Arial,
-        sans-serif;
+        // ----------------------------------------------------
+        // TITLE
+        // ----------------------------------------------------
 
-    color: #222;
+        doc.setFont(
+            "helvetica",
+            "bold"
+        );
 
-    font-size: 10px;
+        doc.setFontSize(16);
 
-}
-
-h1 {
-
-    text-align: center;
-
-    font-size: 18px;
-
-    margin:
-        0 0 5px;
-
-}
-
-.buyer {
-
-    background:
-        #1565c0;
-
-    color: white;
-
-    font-weight: bold;
-
-    text-align: center;
-
-    font-size: 14px;
-
-    padding: 7px;
-
-}
-
-.info {
-
-    text-align: center;
-
-    font-size: 9px;
-
-    margin:
-        4px 0 8px;
-
-}
-
-table {
-
-    width: 100%;
-
-    border-collapse:
-        collapse;
-
-}
-
-th {
-
-    background:
-        #d9eaf7;
-
-    font-weight:
-        bold;
-
-}
-
-th,
-td {
-
-    border:
-        1px solid #aaa;
-
-    padding:
-        4px;
-
-}
-
-.center {
-
-    text-align:
-        center;
-
-}
-
-.right {
-
-    text-align:
-        right;
-
-}
-
-.total {
-
-    background:
-        #e8e8e8;
-
-    font-weight:
-        bold;
-
-}
-
-.overdue {
-
-    color:
-        red;
-
-    font-weight:
-        bold;
-
-}
-
-.section {
-
-    margin-top:
-        12px;
-
-    font-size:
-        13px;
-
-    font-weight:
-        bold;
-
-}
-
-</style>
-
-</head>
-
-<body>
-
-
-<h1>
-Outstanding List
-</h1>
-
-
-<div class="buyer">
-${escapeHtml(data.buyer)}
-</div>
-
-
-<div class="info">
-
-${new Date().toLocaleDateString("en-GB")}
-
-&nbsp;&nbsp;
-
-PK AGENCY - 9425436227, 9406600197
-
-</div>
-
-
-<table>
-
-<thead>
-
-<tr>
-
-<th>S.No</th>
-
-<th>Supplier</th>
-
-<th>Bill Number</th>
-
-<th>Bill Date</th>
-
-<th>Amount</th>
-
-<th>Days Due</th>
-
-</tr>
-
-</thead>
-
-<tbody>
-
-`;
-
-
-    let grandTotal = 0;
-
-
-    data.bills.forEach(
-        function(bill, index) {
-
-            const amount =
-                Number(
-                    bill.Amount || 0
-                );
-
-
-            const days =
-                Number(
-                    bill["Days Due"] || 0
-                );
-
-
-            grandTotal +=
-                amount;
-
-
-            html += `
-
-<tr class="${
-    days > 120
-        ? "overdue"
-        : ""
-}">
-
-<td class="center">
-${index + 1}
-</td>
-
-<td>
-${escapeHtml(
-    bill["Mumbai Party"] || ""
-)}
-</td>
-
-<td class="center">
-${escapeHtml(
-    String(
-        bill["Bill Number"] || ""
-    )
-)}
-</td>
-
-<td class="center">
-${escapeHtml(
-    bill["Bill Date"] || ""
-)}
-</td>
-
-<td class="right">
-${formatIndianNumber(
-    amount
-)}
-</td>
-
-<td class="right">
-${days}
-</td>
-
-</tr>
-
-`;
-
-        }
-    );
-
-
-    html += `
-
-<tr class="total">
-
-<td></td>
-
-<td></td>
-
-<td></td>
-
-<td class="right">
-Grand Total
-</td>
-
-<td class="right">
-${formatIndianNumber(
-    grandTotal
-)}
-</td>
-
-<td></td>
-
-</tr>
-
-</tbody>
-
-</table>
-
-
-<div class="section">
-Supplier Wise Summary
-</div>
-
-
-<table>
-
-<thead>
-
-<tr>
-
-<th>
-Supplier
-</th>
-
-<th>
-Total Amount
-</th>
-
-</tr>
-
-</thead>
-
-<tbody>
-
-`;
-
-
-    data.supplier_summary.forEach(
-        function(item) {
-
-            html += `
-
-<tr>
-
-<td>
-${escapeHtml(
-    item.supplier || ""
-)}
-</td>
-
-<td class="right">
-${formatIndianNumber(
-    item.total
-)}
-</td>
-
-</tr>
-
-`;
-
-        }
-    );
-
-
-    html += `
-
-<tr class="total">
-
-<td>
-Grand Total
-</td>
-
-<td class="right">
-${formatIndianNumber(
-    grandTotal
-)}
-</td>
-
-</tr>
-
-</tbody>
-
-</table>
-
-
-</body>
-
-</html>
-
-`;
-
-
-    const printWindow =
-        window.open(
-            "",
-            "_blank"
+        doc.text(
+            "Outstanding List",
+            105,
+            12,
+            {
+                align: "center"
+            }
         );
 
 
-    if (!printWindow) {
+        // ----------------------------------------------------
+        // BUYER
+        // ----------------------------------------------------
 
-        alert(
-            "Please allow pop-ups for this app."
+        doc.setFillColor(
+            21,
+            101,
+            192
         );
 
-        return;
 
-    }
-
-
-    printWindow.document.open();
-
-    printWindow.document.write(
-        html
-    );
-
-    printWindow.document.close();
+        doc.rect(
+            10,
+            16,
+            190,
+            9,
+            "F"
+        );
 
 
-    printWindow.onload =
-        function() {
+        doc.setTextColor(
+            255,
+            255,
+            255
+        );
 
-            setTimeout(
-                function() {
 
-                    printWindow.print();
+        doc.setFontSize(12);
 
-                },
-                500
+
+        doc.text(
+            buyerName,
+            105,
+            22,
+            {
+                align: "center"
+            }
+        );
+
+
+        doc.setTextColor(
+            0,
+            0,
+            0
+        );
+
+
+        // ----------------------------------------------------
+        // DATE / CONTACT
+        // ----------------------------------------------------
+
+        const today =
+            new Date()
+                .toLocaleDateString(
+                    "en-GB"
+                );
+
+
+        doc.setFont(
+            "helvetica",
+            "normal"
+        );
+
+        doc.setFontSize(8);
+
+
+        doc.text(
+            today +
+            "    PK AGENCY - 9425436227, 9406600197",
+            105,
+            30,
+            {
+                align: "center"
+            }
+        );
+
+
+        // ----------------------------------------------------
+        // BILL TABLE
+        // ----------------------------------------------------
+
+        const billRows =
+            data.bills.map(
+                function(bill, index) {
+
+                    return [
+
+                        index + 1,
+
+                        bill["Mumbai Party"] ||
+                            "",
+
+                        String(
+                            bill["Bill Number"] ||
+                            ""
+                        ),
+
+                        bill["Bill Date"] ||
+                            "",
+
+                        formatIndianNumber(
+                            bill.Amount
+                        ),
+
+                        String(
+                            bill["Days Due"] ||
+                            0
+                        )
+
+                    ];
+
+                }
             );
 
-        };
 
-}
-
-
-// ============================================================
-// STATUS
-// ============================================================
-
-function setStatus(
-    message,
-    isError = false
-) {
-
-    statusBox.textContent =
-        message;
+        const total =
+            Number(
+                data.total_outstanding ||
+                0
+            );
 
 
-    statusBox.classList.toggle(
-        "error",
-        isError
-    );
+        doc.autoTable({
+
+            startY: 34,
+
+            head: [[
+
+                "S.No",
+
+                "Supplier",
+
+                "Bill Number",
+
+                "Bill Date",
+
+                "Amount",
+
+                "Days Due"
+
+            ]],
+
+            body:
+                billRows,
+
+            foot: [[
+
+                "",
+
+                "",
+
+                "",
+
+                "Grand Total",
+
+                formatIndianNumber(
+                    total
+                ),
+
+                ""
+
+            ]],
+
+            theme:
+                "grid",
+
+            styles: {
+
+                font:
+                    "helvetica",
+
+                fontSize:
+                    7,
+
+                cellPadding:
+                    2,
+
+                lineColor:
+                    [170,170,170],
+
+                lineWidth:
+                    .15
+
+            },
+
+            headStyles: {
+
+                fillColor:
+                    [217,234,247],
+
+                textColor:
+                    [0,0,0],
+
+                fontStyle:
+                    "bold",
+
+                halign:
+                    "center"
+
+            },
+
+            footStyles: {
+
+                fillColor:
+                    [232,232,232],
+
+                textColor:
+                    [0,0,0],
+
+                fontStyle:
+                    "bold"
+
+            },
+
+            columnStyles: {
+
+                0: {
+                    halign: "center",
+                    cellWidth: 12
+                },
+
+                1: {
+                    cellWidth: 48
+                },
+
+                2: {
+                    halign: "center",
+                    cellWidth: 25
+                },
+
+                3: {
+                    halign: "center",
+                    cellWidth: 24
+                },
+
+                4: {
+                    halign: "right",
+                    cellWidth: 35
+                },
+
+                5: {
+                    halign: "right",
+                    cellWidth: 20
+                }
+
+            },
+
+            didParseCell:
+                function(hookData) {
+
+                    if (
+                        hookData.section ===
+                        "body"
+                        &&
+                        hookData.column.index === 5
+                    ) {
+
+                        const days =
+                            Number(
+                                data.bills[
+                                    hookData.row.index
+                                ]["Days Due"] ||
+                                0
+                            );
+
+
+                        if (days > 120) {
+
+                            hookData.cell.styles.textColor =
+                                [220,38,38];
+
+                            hookData.cell.styles.fontStyle =
+                                "bold";
+
+                        }
+
+                    }
+
+                }
+
+        });
+
+
+        // ----------------------------------------------------
+        // SUPPLIER SUMMARY
+        // ----------------------------------------------------
+
+        let finalY =
+            doc.lastAutoTable.finalY +
+            10;
+
+
+        if (finalY > 265) {
+
+            doc.addPage();
+
+            finalY = 15;
+
+        }
+
+
+        doc.setFont(
+            "helvetica",
+            "bold"
+        );
+
+        doc.setFontSize(11);
+
+
+        doc.text(
+            "Supplier Wise Summary",
+            10,
+            finalY
+        );
+
+
+        const supplierRows =
+            data.supplier_summary.map(
+                function(item) {
+
+                    return [
+
+                        item.supplier ||
+                            "",
+
+                        formatIndianNumber(
+                            item.total
+                        )
+
+                    ];
+
+                }
+            );
+
+
+        supplierRows.push([
+
+            "Grand Total",
+
+            formatIndianNumber(
+                total
+            )
+
+        ]);
+
+
+        doc.autoTable({
+
+            startY:
+                finalY + 4,
+
+            head: [[
+
+                "Supplier",
+
+                "Total Amount"
+
+            ]],
+
+            body:
+                supplierRows,
+
+            theme:
+                "grid",
+
+            styles: {
+
+                fontSize:
+                    8,
+
+                cellPadding:
+                    2
+
+            },
+
+            headStyles: {
+
+                fillColor:
+                    [217,234,247],
+
+                textColor:
+                    [0,0,0],
+
+                fontStyle:
+                    "bold"
+
+            },
+
+            columnStyles: {
+
+                0: {
+                    cellWidth: 110
+                },
+
+                1: {
+                    halign: "right",
+                    cellWidth: 60
+                }
+
+            },
+
+            didParseCell:
+                function(hookData) {
+
+                    if (
+                        hookData.section ===
+                        "body"
+                        &&
+                        hookData.row.index ===
+                        supplierRows.length - 1
+                    ) {
+
+                        hookData.cell.styles.fillColor =
+                            [232,232,232];
+
+                        hookData.cell.styles.fontStyle =
+                            "bold";
+
+                    }
+
+                }
+
+        });
+
+
+        // ----------------------------------------------------
+        // CREATE BLOB
+        // ----------------------------------------------------
+
+        const pdfBlob =
+            doc.output(
+                "blob"
+            );
+
+
+        const pdfFile =
+            new File(
+                [
+                    pdfBlob
+                ],
+                fileName,
+                {
+                    type:
+                        "application/pdf"
+                }
+            );
+
+
+        // ----------------------------------------------------
+        // IPHONE SHARE
+        // ----------------------------------------------------
+
+        if (
+            navigator.share
+            &&
+            navigator.canShare
+            &&
+            navigator.canShare({
+                files: [pdfFile]
+            })
+        ) {
+
+            await navigator.share({
+
+                title:
+                    buyerName +
+                    " Outstanding List",
+
+                text:
+                    buyerName +
+                    " Outstanding List",
+
+                files: [
+                    pdfFile
+                ]
+
+            });
+
+
+            setStatus(
+                "PDF shared successfully"
+            );
+
+        }
+
+        else {
+
+            // ------------------------------------------------
+            // FALLBACK DOWNLOAD
+            // ------------------------------------------------
+
+            const url =
+                URL.createObjectURL(
+                    pdfBlob
+                );
+
+
+            const link =
+                document.createElement(
+                    "a"
+                );
+
+
+            link.href =
+                url;
+
+
+            link.download =
+                fileName;
+
+
+            document.body.appendChild(
+                link
+            );
+
+
+            link.click();
+
+
+            link.remove();
+
+
+            URL.revokeObjectURL(
+                url
+            );
+
+
+            setStatus(
+                "PDF downloaded as: " +
+                fileName
+            );
+
+        }
+
+    }
+    catch (error) {
+
+        console.error(error);
+
+
+        if (
+            error.name ===
+            "AbortError"
+        ) {
+
+            setStatus(
+                "PDF sharing cancelled"
+            );
+
+        }
+        else {
+
+            setStatus(
+                "PDF error: " +
+                error.message,
+
+                true
+            );
+
+        }
+
+    }
+    finally {
+
+        pdfButton.disabled =
+            false;
+
+        pdfButton.textContent =
+            "Share PDF";
+
+    }
 
 }
 
@@ -1737,22 +2247,27 @@ function escapeHtml(
 ) {
 
     return String(value)
+
         .replace(
             /&/g,
             "&amp;"
         )
+
         .replace(
             /</g,
             "&lt;"
         )
+
         .replace(
             />/g,
             "&gt;"
         )
+
         .replace(
             /"/g,
             "&quot;"
         )
+
         .replace(
             /'/g,
             "&#039;"
