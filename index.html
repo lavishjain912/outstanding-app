@@ -1,54 +1,2485 @@
-async function sharePDF() {
+<!DOCTYPE html>
+<html lang="en">
 
-    if (!currentBuyerData) {
-        return;
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<meta
+    name="apple-mobile-web-app-capable"
+    content="yes"
+>
+
+<meta
+    name="apple-mobile-web-app-status-bar-style"
+    content="default"
+>
+
+<title>Outstanding App</title>
+
+
+<!-- ============================================================
+     PDF LIBRARIES
+     ============================================================ -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+
+
+<style>
+
+/* ============================================================
+   GLOBAL
+   ============================================================ */
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    background: #f4f6f8;
+}
+
+body {
+
+    margin: 0;
+
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Arial,
+        sans-serif;
+
+    background: #f4f6f8;
+
+    color: #111827;
+
+}
+
+
+/* ============================================================
+   PIN SCREEN
+   ============================================================ */
+
+#pinScreen {
+
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 99999;
+
+    background:
+        linear-gradient(
+            135deg,
+            #1565c0,
+            #0d47a1
+        );
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 20px;
+
+}
+
+
+.pin-box {
+
+    width: 100%;
+
+    max-width: 360px;
+
+    background: white;
+
+    border-radius: 16px;
+
+    padding: 28px 22px;
+
+    text-align: center;
+
+    box-shadow:
+        0 12px 40px
+        rgba(0,0,0,.25);
+
+}
+
+
+.pin-box h1 {
+
+    margin: 0;
+
+    font-size: 24px;
+
+    color: #0d47a1;
+
+}
+
+
+.pin-box p {
+
+    margin:
+        8px 0 20px;
+
+    color: #6b7280;
+
+    font-size: 14px;
+
+}
+
+
+#pinInput {
+
+    width: 100%;
+
+    padding: 14px;
+
+    border:
+        1px solid #cbd5e1;
+
+    border-radius: 10px;
+
+    font-size: 24px;
+
+    letter-spacing: 8px;
+
+    text-align: center;
+
+    outline: none;
+
+}
+
+
+#pinInput:focus {
+
+    border-color:
+        #1565c0;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(21,101,192,.12);
+
+}
+
+
+#pinButton {
+
+    width: 100%;
+
+    margin-top: 14px;
+
+    padding: 13px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: #1565c0;
+
+    color: white;
+
+    font-size: 16px;
+
+    font-weight: 700;
+
+}
+
+
+#pinError {
+
+    min-height: 20px;
+
+    margin-top: 10px;
+
+    color: #dc2626;
+
+    font-size: 13px;
+
+}
+
+
+/* ============================================================
+   APP HEADER
+   ============================================================ */
+
+.header {
+
+    background:
+        linear-gradient(
+            135deg,
+            #1565c0,
+            #0d47a1
+        );
+
+    color: white;
+
+    padding:
+        18px 16px;
+
+    text-align: center;
+
+    box-shadow:
+        0 2px 8px
+        rgba(0,0,0,.15);
+
+}
+
+
+.header h1 {
+
+    margin: 0;
+
+    font-size: 22px;
+
+}
+
+
+.header p {
+
+    margin:
+        5px 0 0;
+
+    font-size: 13px;
+
+    opacity: .9;
+
+}
+
+
+/* ============================================================
+   MAIN CONTAINER
+   ============================================================ */
+
+.container {
+
+    max-width: 900px;
+
+    margin: auto;
+
+    padding: 14px;
+
+}
+
+
+/* ============================================================
+   SEARCH CARD
+   ============================================================ */
+
+.search-card {
+
+    background: white;
+
+    border-radius: 12px;
+
+    padding: 16px;
+
+    margin-bottom: 15px;
+
+    box-shadow:
+        0 2px 8px
+        rgba(0,0,0,.08);
+
+}
+
+
+label {
+
+    display: block;
+
+    font-weight: 600;
+
+    margin-bottom: 7px;
+
+}
+
+
+.search-box {
+
+    position: relative;
+
+}
+
+
+#buyerSearch {
+
+    width: 100%;
+
+    padding:
+        13px 42px 13px 13px;
+
+    border:
+        1px solid #cbd5e1;
+
+    border-radius: 9px;
+
+    font-size: 16px;
+
+    outline: none;
+
+    background: white;
+
+}
+
+
+#buyerSearch:focus {
+
+    border-color:
+        #1565c0;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(21,101,192,.12);
+
+}
+
+
+.clear-search {
+
+    position: absolute;
+
+    right: 10px;
+
+    top: 50%;
+
+    transform:
+        translateY(-50%);
+
+    width: 28px;
+
+    height: 28px;
+
+    border-radius: 50%;
+
+    border: none;
+
+    background: #e5e7eb;
+
+    color: #374151;
+
+    font-size: 18px;
+
+    line-height: 28px;
+
+    padding: 0;
+
+}
+
+
+.buyer-list {
+
+    margin-top: 9px;
+
+    border:
+        1px solid #d1d5db;
+
+    border-radius: 9px;
+
+    background: white;
+
+    max-height: 270px;
+
+    overflow-y: auto;
+
+    -webkit-overflow-scrolling: touch;
+
+}
+
+
+.buyer-item {
+
+    padding:
+        13px 12px;
+
+    border-bottom:
+        1px solid #edf0f3;
+
+    font-size: 15px;
+
+    cursor: pointer;
+
+    -webkit-tap-highlight-color:
+        rgba(21,101,192,.12);
+
+}
+
+
+.buyer-item:last-child {
+
+    border-bottom: none;
+
+}
+
+
+.buyer-item:active {
+
+    background: #e8f1ff;
+
+}
+
+
+.buyer-item.selected {
+
+    background: #dbeafe;
+
+    color: #0d47a1;
+
+    font-weight: 700;
+
+}
+
+
+.no-buyers {
+
+    padding: 18px;
+
+    text-align: center;
+
+    color: #6b7280;
+
+    font-size: 14px;
+
+}
+
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+
+button {
+
+    border: none;
+
+    border-radius: 9px;
+
+    padding:
+        12px 16px;
+
+    font-size: 15px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+}
+
+
+.primary {
+
+    background: #1565c0;
+
+    color: white;
+
+    width: 100%;
+
+    margin-top: 12px;
+
+}
+
+
+.primary:disabled {
+
+    background: #9ca3af;
+
+}
+
+
+.pdf-button {
+
+    background: #198754;
+
+    color: white;
+
+    width: 100%;
+
+    margin-top: 14px;
+
+}
+
+
+.pdf-button:disabled {
+
+    background: #9ca3af;
+
+}
+
+
+/* ============================================================
+   STATUS
+   ============================================================ */
+
+.status {
+
+    padding: 10px;
+
+    border-radius: 8px;
+
+    background: #eef4ff;
+
+    color: #1565c0;
+
+    font-size: 14px;
+
+    margin-top: 10px;
+
+}
+
+
+.status.error {
+
+    background: #fee2e2;
+
+    color: #b91c1c;
+
+}
+
+
+/* ============================================================
+   REPORT AREA
+   ============================================================ */
+
+#report {
+
+    width: 100%;
+
+}
+
+
+.hidden {
+
+    display: none !important;
+
+}
+
+
+/* ============================================================
+   REPORT SHEET
+   This intentionally resembles the PDF.
+   ============================================================ */
+
+.report-sheet {
+
+    background: white;
+
+    width: 100%;
+
+    max-width: 794px;
+
+    margin:
+        0 auto 25px;
+
+    padding:
+        28px 30px 35px;
+
+    box-shadow:
+        0 2px 10px
+        rgba(0,0,0,.08);
+
+}
+
+
+/* ============================================================
+   REPORT TITLE
+   ============================================================ */
+
+.report-title {
+
+    margin: 0;
+
+    text-align: center;
+
+    font-family:
+        Arial,
+        sans-serif;
+
+    font-size: 22px;
+
+    line-height: 1.1;
+
+    font-weight: 700;
+
+    color: #000;
+
+}
+
+
+/* ============================================================
+   BUYER NAME BAND
+   ============================================================ */
+
+.buyer-band {
+
+    width: 100%;
+
+    margin-top: 9px;
+
+    min-height: 36px;
+
+    background: #1565c0;
+
+    color: white;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    text-align: center;
+
+    padding:
+        5px 10px;
+
+    font-family:
+        Arial,
+        sans-serif;
+
+    font-size: 16px;
+
+    font-weight: 700;
+
+}
+
+
+/* ============================================================
+   DATE / AGENCY LINE
+   ============================================================ */
+
+.report-meta {
+
+    display: grid;
+
+    grid-template-columns:
+        1fr 2fr 1fr;
+
+    align-items: center;
+
+    margin-top: 7px;
+
+    margin-bottom: 8px;
+
+    font-family:
+        Arial,
+        sans-serif;
+
+    font-size: 11px;
+
+    color: #000;
+
+}
+
+
+.report-date {
+
+    text-align: left;
+
+}
+
+
+.report-agency {
+
+    text-align: center;
+
+    white-space: nowrap;
+
+}
+
+
+.report-meta-spacer {
+
+    visibility: hidden;
+
+}
+
+
+/* ============================================================
+   REPORT TABLES
+   ============================================================ */
+
+.report-table-wrap {
+
+    width: 100%;
+
+    overflow-x: auto;
+
+    -webkit-overflow-scrolling: touch;
+
+}
+
+
+.report-table {
+
+    width: 100%;
+
+    border-collapse: collapse;
+
+    table-layout: fixed;
+
+    font-family:
+        Arial,
+        sans-serif;
+
+    font-size: 10px;
+
+    color: #000;
+
+}
+
+
+.report-table th {
+
+    background: #d9eaf7;
+
+    font-weight: 700;
+
+    text-align: center;
+
+    padding:
+        5px 4px;
+
+    border:
+        1px solid #aaa;
+
+    line-height: 1.1;
+
+}
+
+
+.report-table td {
+
+    padding:
+        4px 4px;
+
+    border:
+        1px solid #aaa;
+
+    line-height: 1.15;
+
+    vertical-align: middle;
+
+}
+
+
+.report-table .center {
+
+    text-align: center;
+
+}
+
+
+.report-table .amount {
+
+    text-align: right;
+
+    white-space: nowrap;
+
+}
+
+
+.report-table .days {
+
+    text-align: right;
+
+}
+
+
+.report-table .overdue {
+
+    color: #dc2626;
+
+    font-weight: 700;
+
+}
+
+
+.report-table .total-row {
+
+    background: #e8e8e8;
+
+    font-weight: 700;
+
+}
+
+
+.report-table .total-row td {
+
+    border-top:
+        1px solid #777;
+
+}
+
+
+/* Column widths */
+
+.bill-table th:nth-child(1),
+.bill-table td:nth-child(1) {
+
+    width: 7%;
+
+}
+
+
+.bill-table th:nth-child(2),
+.bill-table td:nth-child(2) {
+
+    width: 31%;
+
+}
+
+
+.bill-table th:nth-child(3),
+.bill-table td:nth-child(3) {
+
+    width: 16%;
+
+}
+
+
+.bill-table th:nth-child(4),
+.bill-table td:nth-child(4) {
+
+    width: 15%;
+
+}
+
+
+.bill-table th:nth-child(5),
+.bill-table td:nth-child(5) {
+
+    width: 20%;
+
+}
+
+
+.bill-table th:nth-child(6),
+.bill-table td:nth-child(6) {
+
+    width: 11%;
+
+}
+
+
+/* ============================================================
+   SUPPLIER SUMMARY
+   ============================================================ */
+
+.supplier-summary-title {
+
+    margin:
+        14px 0 6px;
+
+    font-family:
+        Arial,
+        sans-serif;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    color: #000;
+
+}
+
+
+.supplier-table th:nth-child(1),
+.supplier-table td:nth-child(1) {
+
+    width: 65%;
+
+}
+
+
+.supplier-table th:nth-child(2),
+.supplier-table td:nth-child(2) {
+
+    width: 35%;
+
+}
+
+
+.supplier-table td:first-child {
+
+    text-align: left;
+
+}
+
+
+.supplier-table td:last-child {
+
+    text-align: right;
+
+}
+
+
+/* ============================================================
+   MOBILE
+   ============================================================ */
+
+@media (max-width: 600px) {
+
+    .container {
+
+        padding: 8px;
+
     }
+
+
+    .search-card {
+
+        padding: 12px;
+
+    }
+
+
+    .report-sheet {
+
+        padding:
+            18px 10px 25px;
+
+        box-shadow: none;
+
+    }
+
+
+    .report-title {
+
+        font-size: 19px;
+
+    }
+
+
+    .buyer-band {
+
+        font-size: 14px;
+
+        min-height: 32px;
+
+    }
+
+
+    .report-meta {
+
+        grid-template-columns:
+            1fr 2fr 1fr;
+
+        font-size: 8px;
+
+    }
+
+
+    .report-table {
+
+        font-size: 8px;
+
+    }
+
+
+    .report-table th {
+
+        padding:
+            4px 2px;
+
+    }
+
+
+    .report-table td {
+
+        padding:
+            3px 2px;
+
+    }
+
+
+    .supplier-summary-title {
+
+        font-size: 12px;
+
+    }
+
+}
+
+
+/* ============================================================
+   VERY SMALL PHONES
+   ============================================================ */
+
+@media (max-width: 380px) {
+
+    .report-meta {
+
+        font-size: 7px;
+
+    }
+
+
+    .report-table {
+
+        font-size: 7px;
+
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- ============================================================
+     PIN SCREEN
+     ============================================================ -->
+
+<div id="pinScreen">
+
+    <div class="pin-box">
+
+        <h1>
+            Outstanding App
+        </h1>
+
+        <p>
+            Enter PIN to continue
+        </p>
+
+        <input
+            id="pinInput"
+            type="password"
+            inputmode="numeric"
+            maxlength="4"
+            autocomplete="off"
+            placeholder="••••"
+        >
+
+        <button
+            id="pinButton"
+            type="button"
+        >
+            Continue
+        </button>
+
+        <div id="pinError"></div>
+
+    </div>
+
+</div>
+
+
+<!-- ============================================================
+     APPLICATION
+     ============================================================ -->
+
+<div id="app" class="hidden">
+
+
+    <div class="header">
+
+        <h1>
+            Outstanding App
+        </h1>
+
+        <p>
+            Buyer Outstanding Report
+        </p>
+
+    </div>
+
+
+    <div class="container">
+
+
+        <!-- ====================================================
+             BUYER SEARCH
+             ==================================================== -->
+
+        <div class="search-card">
+
+            <label for="buyerSearch">
+                Search Buyer
+            </label>
+
+
+            <div class="search-box">
+
+                <input
+                    id="buyerSearch"
+                    type="text"
+                    placeholder="Type buyer name..."
+                    autocomplete="off"
+                >
+
+
+                <button
+                    id="clearSearch"
+                    class="clear-search"
+                    type="button"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <div
+                id="buyerList"
+                class="buyer-list"
+            >
+
+                <div class="no-buyers">
+                    Loading buyers...
+                </div>
+
+            </div>
+
+
+            <button
+                id="loadButton"
+                class="primary"
+                disabled
+            >
+                View Outstanding
+            </button>
+
+
+            <div
+                id="status"
+                class="status"
+            >
+                Connecting to server...
+            </div>
+
+        </div>
+
+
+        <!-- ====================================================
+             REPORT
+             ==================================================== -->
+
+        <div
+            id="report"
+            class="hidden"
+        >
+
+            <div class="report-sheet">
+
+
+                <!-- ============================================
+                     TITLE
+                     ============================================ -->
+
+                <h1 class="report-title">
+                    Outstanding List
+                </h1>
+
+
+                <!-- ============================================
+                     BUYER NAME
+                     ============================================ -->
+
+                <div
+                    id="buyerTitle"
+                    class="buyer-band"
+                >
+                </div>
+
+
+                <!-- ============================================
+                     DATE + AGENCY
+                     ============================================ -->
+
+                <div class="report-meta">
+
+                    <div
+                        id="reportDate"
+                        class="report-date"
+                    >
+                    </div>
+
+
+                    <div
+                        class="report-agency"
+                    >
+                        PK AGENCY -
+                        9425436227, 9406600197
+                    </div>
+
+
+                    <div
+                        class="report-meta-spacer"
+                    >
+                        .
+                    </div>
+
+                </div>
+
+
+                <!-- ============================================
+                     BILL TABLE
+                     ============================================ -->
+
+                <div class="report-table-wrap">
+
+                    <table
+                        class="report-table bill-table"
+                    >
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    S.No
+                                </th>
+
+                                <th>
+                                    Supplier
+                                </th>
+
+                                <th>
+                                    Bill Number
+                                </th>
+
+                                <th>
+                                    Bill Date
+                                </th>
+
+                                <th>
+                                    Amount
+                                </th>
+
+                                <th>
+                                    Days Due
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody
+                            id="billBody"
+                        >
+                        </tbody>
+
+
+                        <tfoot
+                            id="billFoot"
+                        >
+                        </tfoot>
+
+                    </table>
+
+                </div>
+
+
+                <!-- ============================================
+                     SUPPLIER SUMMARY
+                     ============================================ -->
+
+                <div
+                    class="supplier-summary-title"
+                >
+                    Supplier Wise Summary
+                </div>
+
+
+                <div class="report-table-wrap">
+
+                    <table
+                        class="report-table supplier-table"
+                    >
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Supplier
+                                </th>
+
+                                <th>
+                                    Total Amount
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody
+                            id="supplierBody"
+                        >
+                        </tbody>
+
+
+                        <tfoot
+                            id="supplierFoot"
+                        >
+                        </tfoot>
+
+                    </table>
+
+                </div>
+
+
+                <!-- ============================================
+                     SHARE PDF
+                     ============================================ -->
+
+                <button
+                    id="pdfButton"
+                    class="pdf-button"
+                    type="button"
+                >
+                    Share PDF
+                </button>
+
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+<script>
+
+
+/* ============================================================
+   API
+   ============================================================ */
+
+const API_URL =
+    "https://script.google.com/macros/s/AKfycbxA-kfhKp1DfL_x4uIr82aWntma7dzqwFvKPzFe4AFuOqT48P0Pm-AsiNYGOUWCSx_I/exec";
+
+
+/* ============================================================
+   PIN / SESSION
+   ============================================================ */
+
+const SESSION_KEY =
+    "outstanding_app_session";
+
+
+const pinScreen =
+    document.getElementById(
+        "pinScreen"
+    );
+
+
+const app =
+    document.getElementById(
+        "app"
+    );
+
+
+const pinInput =
+    document.getElementById(
+        "pinInput"
+    );
+
+
+const pinButton =
+    document.getElementById(
+        "pinButton"
+    );
+
+
+const pinError =
+    document.getElementById(
+        "pinError"
+    );
+
+
+let sessionToken =
+    sessionStorage.getItem(
+        SESSION_KEY
+    );
+
+
+/* ============================================================
+   SHOW APP
+   ============================================================ */
+
+function showApp() {
+
+    pinScreen.style.display =
+        "none";
+
+    app.classList.remove(
+        "hidden"
+    );
+
+    loadBuyers();
+
+}
+
+
+/* ============================================================
+   CHECK PIN
+   ============================================================ */
+
+async function verifyPIN() {
+
+    const pin =
+        pinInput.value.trim();
+
+
+    if (
+        !/^\d{4}$/.test(pin)
+    ) {
+
+        pinError.textContent =
+            "Please enter the 4-digit PIN.";
+
+        return;
+
+    }
+
+
+    pinButton.disabled =
+        true;
+
+    pinButton.textContent =
+        "Checking...";
+
+    pinError.textContent =
+        "";
+
 
     try {
 
-        pdfButton.disabled = true;
-        pdfButton.textContent = "Creating PDF...";
+        const response =
+            await fetch(
+                API_URL +
+                "?action=login&pin=" +
+                encodeURIComponent(pin)
+            );
 
-        const { jsPDF } = window.jspdf;
 
-        const data = currentBuyerData;
+        const data =
+            await response.json();
 
-        const doc = new jsPDF({
-            orientation: "portrait",
-            unit: "mm",
-            format: "a4"
-        });
+
+        if (
+            !data.success
+        ) {
+
+            throw new Error(
+                data.error ||
+                "Incorrect PIN"
+            );
+
+        }
+
+
+        sessionToken =
+            data.token || "";
+
+
+        sessionStorage.setItem(
+            SESSION_KEY,
+            sessionToken
+        );
+
+
+        showApp();
+
+    }
+
+    catch (error) {
+
+        pinError.textContent =
+            error.message ||
+            "Incorrect PIN";
+
+        pinInput.value =
+            "";
+
+        pinInput.focus();
+
+    }
+
+    finally {
+
+        pinButton.disabled =
+            false;
+
+        pinButton.textContent =
+            "Continue";
+
+    }
+
+}
+
+
+pinButton.addEventListener(
+    "click",
+    verifyPIN
+);
+
+
+pinInput.addEventListener(
+    "keydown",
+    function(event) {
+
+        if (
+            event.key === "Enter"
+        ) {
+
+            verifyPIN();
+
+        }
+
+    }
+);
+
+
+/* ============================================================
+   ELEMENTS
+   ============================================================ */
+
+const buyerSearch =
+    document.getElementById(
+        "buyerSearch"
+    );
+
+
+const clearSearch =
+    document.getElementById(
+        "clearSearch"
+    );
+
+
+const buyerList =
+    document.getElementById(
+        "buyerList"
+    );
+
+
+const loadButton =
+    document.getElementById(
+        "loadButton"
+    );
+
+
+const statusBox =
+    document.getElementById(
+        "status"
+    );
+
+
+const report =
+    document.getElementById(
+        "report"
+    );
+
+
+const buyerTitle =
+    document.getElementById(
+        "buyerTitle"
+    );
+
+
+const reportDate =
+    document.getElementById(
+        "reportDate"
+    );
+
+
+const billBody =
+    document.getElementById(
+        "billBody"
+    );
+
+
+const billFoot =
+    document.getElementById(
+        "billFoot"
+    );
+
+
+const supplierBody =
+    document.getElementById(
+        "supplierBody"
+    );
+
+
+const supplierFoot =
+    document.getElementById(
+        "supplierFoot"
+    );
+
+
+const pdfButton =
+    document.getElementById(
+        "pdfButton"
+    );
+
+
+/* ============================================================
+   STATE
+   ============================================================ */
+
+let buyers = [];
+
+let filteredBuyers = [];
+
+let selectedBuyer = "";
+
+let currentBuyerData = null;
+
+
+/* ============================================================
+   NUMBER FORMAT
+   ============================================================ */
+
+function formatIndianNumber(
+    value
+) {
+
+    return Number(
+        value || 0
+    ).toLocaleString(
+        "en-IN",
+        {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        }
+    );
+
+}
+
+
+/* ============================================================
+   DATE
+   ============================================================ */
+
+function getReportDate() {
+
+    return new Date()
+        .toLocaleDateString(
+            "en-GB"
+        );
+
+}
+
+
+/* ============================================================
+   STATUS
+   ============================================================ */
+
+function setStatus(
+    message,
+    isError = false
+) {
+
+    statusBox.textContent =
+        message;
+
+    statusBox.classList.toggle(
+        "error",
+        isError
+    );
+
+}
+
+
+/* ============================================================
+   AUTH QUERY
+   ============================================================ */
+
+function authParameter() {
+
+    if (
+        sessionToken
+    ) {
+
+        return (
+            "&token=" +
+            encodeURIComponent(
+                sessionToken
+            )
+        );
+
+    }
+
+    return "";
+
+}
+
+
+/* ============================================================
+   LOAD BUYERS
+   ============================================================ */
+
+async function loadBuyers() {
+
+    try {
+
+        setStatus(
+            "Loading buyers..."
+        );
+
+
+        const response =
+            await fetch(
+                API_URL +
+                "?action=buyers" +
+                authParameter()
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Server returned " +
+                response.status
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        if (
+            data.error
+        ) {
+
+            throw new Error(
+                data.error
+            );
+
+        }
+
+
+        buyers =
+            data.buyers || [];
+
+
+        filteredBuyers =
+            [...buyers];
+
+
+        renderBuyerList(
+            filteredBuyers
+        );
+
+
+        setStatus(
+            buyers.length +
+            " buyers loaded"
+        );
+
+    }
+
+    catch (error) {
+
+        console.error(error);
+
+
+        setStatus(
+            "Unable to connect to backend: " +
+            error.message,
+            true
+        );
+
+
+        buyerList.innerHTML = `
+            <div class="no-buyers">
+                Unable to load buyers.
+            </div>
+        `;
+
+    }
+
+}
+
+
+/* ============================================================
+   RENDER BUYER LIST
+   ============================================================ */
+
+function renderBuyerList(
+    list
+) {
+
+    buyerList.innerHTML =
+        "";
+
+
+    if (
+        !list.length
+    ) {
+
+        buyerList.innerHTML = `
+            <div class="no-buyers">
+                No buyers found.
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    list.forEach(
+        function(buyer) {
+
+            const item =
+                document.createElement(
+                    "div"
+                );
+
+
+            item.className =
+                "buyer-item";
+
+
+            if (
+                buyer ===
+                selectedBuyer
+            ) {
+
+                item.classList.add(
+                    "selected"
+                );
+
+            }
+
+
+            item.textContent =
+                buyer;
+
+
+            item.addEventListener(
+                "click",
+                function() {
+
+                    selectBuyer(
+                        buyer
+                    );
+
+                }
+            );
+
+
+            buyerList.appendChild(
+                item
+            );
+
+        }
+    );
+
+}
+
+
+/* ============================================================
+   SELECT BUYER
+   ============================================================ */
+
+function selectBuyer(
+    buyer
+) {
+
+    selectedBuyer =
+        buyer;
+
+
+    buyerSearch.value =
+        buyer;
+
+
+    loadButton.disabled =
+        false;
+
+
+    renderBuyerList(
+        filteredBuyers
+    );
+
+
+    setStatus(
+        "Buyer selected: " +
+        buyer
+    );
+
+}
+
+
+/* ============================================================
+   SEARCH
+   ============================================================ */
+
+buyerSearch.addEventListener(
+    "input",
+    function() {
+
+        const query =
+            buyerSearch.value
+                .trim()
+                .toLowerCase();
+
+
+        selectedBuyer =
+            "";
+
+
+        filteredBuyers =
+            buyers.filter(
+                function(buyer) {
+
+                    return buyer
+                        .toLowerCase()
+                        .includes(query);
+
+                }
+            );
+
+
+        renderBuyerList(
+            filteredBuyers
+        );
+
+
+        loadButton.disabled =
+            true;
+
+
+        if (
+            query === ""
+        ) {
+
+            setStatus(
+                buyers.length +
+                " buyers loaded"
+            );
+
+        }
+
+        else {
+
+            setStatus(
+                filteredBuyers.length +
+                " matching buyers"
+            );
+
+        }
+
+    }
+);
+
+
+/* ============================================================
+   CLEAR SEARCH
+   ============================================================ */
+
+clearSearch.addEventListener(
+    "click",
+    function() {
+
+        buyerSearch.value =
+            "";
+
+        selectedBuyer =
+            "";
+
+        filteredBuyers =
+            [...buyers];
+
+        renderBuyerList(
+            filteredBuyers
+        );
+
+        loadButton.disabled =
+            true;
+
+        buyerSearch.focus();
+
+    }
+);
+
+
+/* ============================================================
+   LOAD BUYER
+   ============================================================ */
+
+loadButton.addEventListener(
+    "click",
+    loadBuyer
+);
+
+
+async function loadBuyer() {
+
+    if (
+        !selectedBuyer
+    ) {
+
+        setStatus(
+            "Please select a buyer.",
+            true
+        );
+
+        return;
+
+    }
+
+
+    try {
+
+        loadButton.disabled =
+            true;
+
+
+        setStatus(
+            "Loading outstanding..."
+        );
+
+
+        const url =
+            API_URL +
+            "?action=buyer&name=" +
+            encodeURIComponent(
+                selectedBuyer
+            ) +
+            authParameter();
+
+
+        const response =
+            await fetch(url);
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Server returned " +
+                response.status
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        if (
+            data.error
+        ) {
+
+            throw new Error(
+                data.error
+            );
+
+        }
+
+
+        currentBuyerData =
+            data;
+
+
+        renderReport(
+            data
+        );
+
+
+        setStatus(
+            "Report loaded"
+        );
+
+    }
+
+    catch (error) {
+
+        console.error(error);
+
+
+        setStatus(
+            "Unable to load buyer: " +
+            error.message,
+            true
+        );
+
+    }
+
+    finally {
+
+        loadButton.disabled =
+            false;
+
+    }
+
+}
+
+
+/* ============================================================
+   RENDER REPORT
+   ============================================================ */
+
+function renderReport(
+    data
+) {
+
+    report.classList.remove(
+        "hidden"
+    );
+
+
+    buyerTitle.textContent =
+        data.buyer ||
+        "Buyer";
+
+
+    reportDate.textContent =
+        getReportDate();
+
+
+    renderBills(
+        data.bills || []
+    );
+
+
+    renderSupplierSummary(
+        data.supplier_summary || []
+    );
+
+
+    setTimeout(
+        function() {
+
+            window.scrollTo({
+
+                top:
+                    report.offsetTop -
+                    10,
+
+                behavior:
+                    "smooth"
+
+            });
+
+        },
+        50
+    );
+
+}
+
+
+/* ============================================================
+   RENDER BILLS
+   ============================================================ */
+
+function renderBills(
+    bills
+) {
+
+    billBody.innerHTML =
+        "";
+
+
+    let total = 0;
+
+
+    bills.forEach(
+        function(
+            bill,
+            index
+        ) {
+
+            const amount =
+                Number(
+                    bill.Amount ||
+                    0
+                );
+
+
+            const days =
+                Number(
+                    bill["Days Due"] ||
+                    0
+                );
+
+
+            total +=
+                amount;
+
+
+            const row =
+                document.createElement(
+                    "tr"
+                );
+
+
+            if (
+                days > 120
+            ) {
+
+                row.classList.add(
+                    "overdue"
+                );
+
+            }
+
+
+            row.innerHTML = `
+
+                <td class="center">
+                    ${index + 1}
+                </td>
+
+                <td>
+                    ${escapeHtml(
+                        bill["Mumbai Party"] ||
+                        ""
+                    )}
+                </td>
+
+                <td class="center">
+                    ${escapeHtml(
+                        String(
+                            bill["Bill Number"] ||
+                            ""
+                        )
+                    )}
+                </td>
+
+                <td class="center">
+                    ${escapeHtml(
+                        bill["Bill Date"] ||
+                        ""
+                    )}
+                </td>
+
+                <td class="amount">
+                    ${formatIndianNumber(
+                        amount
+                    )}
+                </td>
+
+                <td class="days">
+                    ${days}
+                </td>
+
+            `;
+
+
+            billBody.appendChild(
+                row
+            );
+
+        }
+    );
+
+
+    billFoot.innerHTML = `
+
+        <tr class="total-row">
+
+            <td></td>
+
+            <td></td>
+
+            <td></td>
+
+            <td
+                style="
+                    text-align:right;
+                "
+            >
+                Grand Total
+            </td>
+
+            <td class="amount">
+                ${formatIndianNumber(
+                    total
+                )}
+            </td>
+
+            <td></td>
+
+        </tr>
+
+    `;
+
+}
+
+
+/* ============================================================
+   SUPPLIER SUMMARY
+   ============================================================ */
+
+function renderSupplierSummary(
+    suppliers
+) {
+
+    supplierBody.innerHTML =
+        "";
+
+
+    let total = 0;
+
+
+    suppliers.forEach(
+        function(item) {
+
+            const amount =
+                Number(
+                    item.total ||
+                    0
+                );
+
+
+            total +=
+                amount;
+
+
+            const row =
+                document.createElement(
+                    "tr"
+                );
+
+
+            row.innerHTML = `
+
+                <td>
+                    ${escapeHtml(
+                        item.supplier ||
+                        ""
+                    )}
+                </td>
+
+                <td class="amount">
+                    ${formatIndianNumber(
+                        amount
+                    )}
+                </td>
+
+            `;
+
+
+            supplierBody.appendChild(
+                row
+            );
+
+        }
+    );
+
+
+    supplierFoot.innerHTML = `
+
+        <tr class="total-row">
+
+            <td>
+                Grand Total
+            </td>
+
+            <td class="amount">
+                ${formatIndianNumber(
+                    total
+                )}
+            </td>
+
+        </tr>
+
+    `;
+
+}
+
+
+/* ============================================================
+   CREATE PDF
+   ============================================================ */
+
+pdfButton.addEventListener(
+    "click",
+    sharePDF
+);
+
+
+async function sharePDF() {
+
+    if (
+        !currentBuyerData
+    ) {
+
+        return;
+
+    }
+
+
+    try {
+
+        pdfButton.disabled =
+            true;
+
+
+        pdfButton.textContent =
+            "Creating PDF...";
+
+
+        const {
+            jsPDF
+        } = window.jspdf;
+
+
+        const data =
+            currentBuyerData;
+
+
+        const doc =
+            new jsPDF({
+
+                orientation:
+                    "portrait",
+
+                unit:
+                    "mm",
+
+                format:
+                    "a4"
+
+            });
 
 
         const buyerName =
-            data.buyer || "Buyer";
+            data.buyer ||
+            "Buyer";
 
 
         const fileName =
-            buyerName + " Outstanding List.pdf";
+            buyerName +
+            " Outstanding List.pdf";
 
 
-        // ====================================================
-        // PAGE / LAYOUT CONSTANTS
-        // ====================================================
-
-        const pageWidth = 210;
-
-        const leftMargin = 10;
-
-        const tableWidth = 190;
-
-
-        // ====================================================
-        // TITLE
-        // ====================================================
+        /* =====================================================
+           PDF TITLE
+           ===================================================== */
 
         doc.setFont(
             "helvetica",
             "bold"
         );
 
-        doc.setFontSize(16);
+        doc.setFontSize(
+            16
+        );
 
         doc.setTextColor(
             0,
@@ -56,44 +2487,37 @@ async function sharePDF() {
             0
         );
 
+
         doc.text(
             "Outstanding List",
-            pageWidth / 2,
+            105,
             12,
             {
-                align: "center"
+                align:
+                    "center"
             }
         );
 
 
-        // ====================================================
-        // BUYER NAME
-        //
-        // Keep our current Buyer Name style:
-        // BLUE BACKGROUND + WHITE TEXT
-        // ====================================================
+        /* =====================================================
+           BUYER BAND
+           ===================================================== */
 
         doc.setFillColor(
-            173,
-            216,
-            230
+            21,
+            101,
+            192
         );
 
+
         doc.rect(
-            27.5,
+            10,
             16,
-            155,
-            6,
+            190,
+            9,
             "F"
         );
 
-
-        doc.setFont(
-            "helvetica",
-            "bold"
-        );
-
-        doc.setFontSize(11);
 
         doc.setTextColor(
             255,
@@ -101,27 +2525,35 @@ async function sharePDF() {
             255
         );
 
+
+        doc.setFont(
+            "helvetica",
+            "bold"
+        );
+
+
+        doc.setFontSize(
+            12
+        );
+
+
         doc.text(
             buyerName,
-            pageWidth / 2,
-            20.3,
+            105,
+            22,
             {
-                align: "center"
+                align:
+                    "center"
             }
         );
 
 
-        // ====================================================
-        // DATE + PK AGENCY
-        //
-        // Same placement as reference.
-        // ====================================================
+        /* =====================================================
+           DATE + AGENCY
+           ===================================================== */
 
         const today =
-            new Date()
-                .toLocaleDateString(
-                    "en-GB"
-                );
+            getReportDate();
 
 
         doc.setTextColor(
@@ -130,351 +2562,360 @@ async function sharePDF() {
             0
         );
 
+
         doc.setFont(
             "helvetica",
-            "bold"
+            "normal"
         );
 
-        doc.setFontSize(9);
 
+        doc.setFontSize(
+            8
+        );
 
-        // Date
 
         doc.text(
             today,
-            55,
+            42,
             30,
             {
-                align: "center"
+                align:
+                    "center"
             }
         );
 
-
-        // PK Agency
 
         doc.text(
             "PK AGENCY - 9425436227, 9406600197",
-            150,
+            145,
             30,
             {
-                align: "center"
+                align:
+                    "center"
             }
         );
 
 
-        // ====================================================
-        // BILL TABLE DATA
-        // ====================================================
+        /* =====================================================
+           BILL DATA
+           ===================================================== */
 
         const billRows =
-            (data.bills || []).map(
-                function (bill, index) {
+            (data.bills || [])
+                .map(
+                    function(
+                        bill,
+                        index
+                    ) {
 
-                    return [
+                        return [
 
-                        String(index + 1),
+                            index + 1,
 
-                        bill["Mumbai Party"] || "",
+                            bill[
+                                "Mumbai Party"
+                            ] || "",
 
-                        String(
-                            bill["Bill Number"] || ""
-                        ),
+                            String(
+                                bill[
+                                    "Bill Number"
+                                ] || ""
+                            ),
 
-                        bill["Bill Date"] || "",
+                            bill[
+                                "Bill Date"
+                            ] || "",
 
-                        formatIndianNumber(
-                            bill.Amount
-                        ),
+                            formatIndianNumber(
+                                bill.Amount
+                            ),
 
-                        String(
-                            bill["Days Due"] || 0
-                        )
+                            String(
+                                bill[
+                                    "Days Due"
+                                ] || 0
+                            )
 
-                    ];
+                        ];
 
-                }
-            );
+                    }
+                );
 
 
         const total =
             Number(
-                data.total_outstanding || 0
+                data.total_outstanding ||
+                0
             );
 
 
-        // ====================================================
-        // BILL TABLE
-        // ====================================================
+        /* =====================================================
+           BILL TABLE
+           ===================================================== */
 
         doc.autoTable({
 
-            startY: 34,
+            startY:
+                34,
 
             margin: {
-                left: leftMargin,
-                right: leftMargin
+                left:
+                    10,
+                right:
+                    10
             },
 
-            tableWidth: tableWidth,
+            tableWidth:
+                190,
 
             head: [[
+
                 "S.No",
+
                 "Supplier",
+
                 "Bill Number",
+
                 "Bill Date",
+
                 "Amount",
+
                 "Days Due"
+
             ]],
 
-            body: billRows,
+
+            body:
+                billRows,
+
 
             foot: [[
+
                 "",
+
                 "",
+
                 "",
+
                 "Grand Total",
-                formatIndianNumber(total),
+
+                formatIndianNumber(
+                    total
+                ),
+
                 ""
+
             ]],
 
-            theme: "grid",
+
+            theme:
+                "grid",
+
 
             styles: {
 
-                font: "helvetica",
+                font:
+                    "helvetica",
 
-                fontSize: 7.5,
+                fontSize:
+                    7,
 
-                cellPadding: {
-                    top: 1.5,
-                    bottom: 1.5,
-                    left: 2,
-                    right: 2
-                },
+                cellPadding:
+                    2,
 
-                textColor: [
-                    0,
-                    0,
-                    0
-                ],
+                lineColor:
+                    [170,170,170],
 
-                lineColor: [
-                    170,
-                    170,
-                    170
-                ],
+                lineWidth:
+                    0.15,
 
-                lineWidth: 0.15,
+                textColor:
+                    [0,0,0],
 
-                valign: "middle"
+                valign:
+                    "middle"
 
             },
+
 
             headStyles: {
 
-                fillColor: [
-                    255,
-                    255,
-                    255
-                ],
+                fillColor:
+                    [217,234,247],
 
-                textColor: [
-                    0,
-                    0,
-                    0
-                ],
+                textColor:
+                    [0,0,0],
 
-                fontStyle: "bold",
+                fontStyle:
+                    "bold",
 
-                fontSize: 8,
-
-                halign: "center",
-
-                lineColor: [
-                    170,
-                    170,
-                    170
-                ],
-
-                lineWidth: 0.15
+                halign:
+                    "center"
 
             },
+
 
             footStyles: {
 
-                fillColor: [
-                    232,
-                    232,
-                    232
-                ],
+                fillColor:
+                    [232,232,232],
 
-                textColor: [
-                    0,
-                    0,
-                    0
-                ],
+                textColor:
+                    [0,0,0],
 
-                fontStyle: "bold",
-
-                fontSize: 8
+                fontStyle:
+                    "bold"
 
             },
 
+
             columnStyles: {
 
-                // S.No
                 0: {
 
-                    cellWidth: 14,
+                    halign:
+                        "center",
 
-                    halign: "center"
+                    cellWidth:
+                        12
 
                 },
 
-                // Supplier
                 1: {
 
-                    cellWidth: 66,
-
-                    halign: "left"
+                    cellWidth:
+                        48
 
                 },
 
-                // Bill Number
                 2: {
 
-                    cellWidth: 31,
+                    halign:
+                        "center",
 
-                    halign: "left"
+                    cellWidth:
+                        25
 
                 },
 
-                // Bill Date
                 3: {
 
-                    cellWidth: 30,
+                    halign:
+                        "center",
 
-                    halign: "left"
+                    cellWidth:
+                        24
 
                 },
 
-                // Amount
                 4: {
 
-                    cellWidth: 29,
+                    halign:
+                        "right",
 
-                    halign: "right"
+                    cellWidth:
+                        35
 
                 },
 
-                // Days Due
                 5: {
 
-                    cellWidth: 20,
+                    halign:
+                        "right",
 
-                    halign: "right"
+                    cellWidth:
+                        20
 
                 }
 
             },
 
 
-            // =================================================
-            // RED TEXT FOR BILLS > 120 DAYS
-            //
-            // Exactly like reference.
-            // =================================================
-
             didParseCell:
-                function (hookData) {
+                function(
+                    hookData
+                ) {
 
                     if (
 
-                        hookData.section === "body"
+                        hookData.section ===
+                        "body"
 
                         &&
 
-                        hookData.column.index !== undefined
+                        hookData.column.index ===
+                        5
 
                     ) {
 
-                        const rowIndex =
-                            hookData.row.index;
+                        const row =
+                            data.bills[
+                                hookData.row.index
+                            ];
+
+
+                        const days =
+                            Number(
+                                row[
+                                    "Days Due"
+                                ] || 0
+                            );
 
 
                         if (
-                            data.bills[rowIndex]
+                            days > 120
                         ) {
 
-                            const days =
-                                Number(
-                                    data.bills[rowIndex][
-                                        "Days Due"
-                                    ] || 0
-                                );
+                            hookData.cell.styles.textColor =
+                                [
+                                    220,
+                                    38,
+                                    38
+                                ];
 
-
-                            if (days > 120) {
-
-                                hookData.cell.styles.textColor =
-                                    [
-                                        255,
-                                        0,
-                                        0
-                                    ];
-
-                            }
+                            hookData.cell.styles.fontStyle =
+                                "bold";
 
                         }
 
                     }
-
-                },
-
-
-            // =================================================
-            // HEADER / FOOTER
-            // =================================================
-
-            didDrawPage:
-                function () {
-
-                    // Nothing here deliberately.
-                    // This prevents the title/date from
-                    // being duplicated on continuation pages.
 
                 }
 
         });
 
 
-        // ====================================================
-        // SUPPLIER SUMMARY
-        // ====================================================
+        /* =====================================================
+           SUPPLIER SUMMARY
+           ===================================================== */
 
         let finalY =
-            doc.lastAutoTable.finalY + 9;
+            doc.lastAutoTable.finalY +
+            10;
 
 
-        if (finalY > 265) {
+        if (
+            finalY > 265
+        ) {
 
             doc.addPage();
 
-            finalY = 15;
+            finalY =
+                15;
 
         }
 
-
-        // ====================================================
-        // SUPPLIER SUMMARY TITLE
-        // ====================================================
 
         doc.setFont(
             "helvetica",
             "bold"
         );
 
-        doc.setFontSize(11);
+
+        doc.setFontSize(
+            11
+        );
+
 
         doc.setTextColor(
             0,
@@ -482,132 +2923,137 @@ async function sharePDF() {
             0
         );
 
+
         doc.text(
             "Supplier Wise Summary",
-            leftMargin,
+            10,
             finalY
         );
 
 
-        // ====================================================
-        // SUPPLIER SUMMARY DATA
-        // ====================================================
-
         const supplierRows =
-            (data.supplier_summary || []).map(
-                function (item) {
+            (data.supplier_summary || [])
+                .map(
+                    function(item) {
 
-                    return [
+                        return [
 
-                        item.supplier || "",
+                            item.supplier ||
+                                "",
 
-                        formatIndianNumber(
-                            item.total
-                        )
+                            formatIndianNumber(
+                                item.total
+                            )
 
-                    ];
+                        ];
 
-                }
-            );
+                    }
+                );
 
 
         supplierRows.push([
 
             "Grand Total",
 
-            formatIndianNumber(total)
+            formatIndianNumber(
+                total
+            )
 
         ]);
 
 
-        // ====================================================
-        // SUPPLIER SUMMARY TABLE
-        // ====================================================
-
         doc.autoTable({
 
-            startY: finalY + 4,
+            startY:
+                finalY + 4,
 
             margin: {
-                left: leftMargin,
-                right: leftMargin
+
+                left:
+                    10,
+
+                right:
+                    10
+
             },
 
-            tableWidth: 170,
+            tableWidth:
+                170,
+
 
             head: [[
+
                 "Supplier",
+
                 "Total Amount"
+
             ]],
 
-            body: supplierRows,
 
-            theme: "grid",
+            body:
+                supplierRows,
+
+
+            theme:
+                "grid",
+
 
             styles: {
 
-                font: "helvetica",
+                font:
+                    "helvetica",
 
-                fontSize: 8,
+                fontSize:
+                    8,
 
-                cellPadding: {
-                    top: 1.8,
-                    bottom: 1.8,
-                    left: 2,
-                    right: 2
-                },
+                cellPadding:
+                    2,
 
-                textColor: [
-                    0,
-                    0,
-                    0
-                ],
+                lineColor:
+                    [170,170,170],
 
-                lineColor: [
-                    170,
-                    170,
-                    170
-                ],
+                lineWidth:
+                    0.15,
 
-                lineWidth: 0.15
+                textColor:
+                    [0,0,0]
 
             },
+
 
             headStyles: {
 
-                fillColor: [
-                    255,
-                    255,
-                    255
-                ],
+                fillColor:
+                    [217,234,247],
 
-                textColor: [
-                    0,
-                    0,
-                    0
-                ],
+                textColor:
+                    [0,0,0],
 
-                fontStyle: "bold",
+                fontStyle:
+                    "bold",
 
-                halign: "center"
+                halign:
+                    "center"
 
             },
+
 
             columnStyles: {
 
                 0: {
 
-                    cellWidth: 110,
-
-                    halign: "left"
+                    cellWidth:
+                        110
 
                 },
 
                 1: {
 
-                    cellWidth: 60,
+                    cellWidth:
+                        60,
 
-                    halign: "right"
+                    halign:
+                        "right"
 
                 }
 
@@ -615,11 +3061,14 @@ async function sharePDF() {
 
 
             didParseCell:
-                function (hookData) {
+                function(
+                    hookData
+                ) {
 
                     if (
 
-                        hookData.section === "body"
+                        hookData.section ===
+                        "body"
 
                         &&
 
@@ -645,28 +3094,36 @@ async function sharePDF() {
         });
 
 
-        // ====================================================
-        // CREATE PDF BLOB
-        // ====================================================
+        /* =====================================================
+           PDF BLOB
+           ===================================================== */
 
         const pdfBlob =
-            doc.output("blob");
+            doc.output(
+                "blob"
+            );
 
 
         const pdfFile =
             new File(
-                [pdfBlob],
+
+                [
+                    pdfBlob
+                ],
+
                 fileName,
+
                 {
                     type:
                         "application/pdf"
                 }
+
             );
 
 
-        // ====================================================
-        // SHARE ON MOBILE
-        // ====================================================
+        /* =====================================================
+           MOBILE SHARE
+           ===================================================== */
 
         if (
 
@@ -679,7 +3136,8 @@ async function sharePDF() {
             &&
 
             navigator.canShare({
-                files: [pdfFile]
+                files:
+                    [pdfFile]
             })
 
         ) {
@@ -694,9 +3152,8 @@ async function sharePDF() {
                     buyerName +
                     " Outstanding List",
 
-                files: [
-                    pdfFile
-                ]
+                files:
+                    [pdfFile]
 
             });
 
@@ -709,9 +3166,9 @@ async function sharePDF() {
 
         else {
 
-            // =================================================
-            // DESKTOP / FALLBACK DOWNLOAD
-            // =================================================
+            /* =================================================
+               FALLBACK DOWNLOAD
+               ================================================= */
 
             const url =
                 URL.createObjectURL(
@@ -760,11 +3217,14 @@ async function sharePDF() {
 
     catch (error) {
 
-        console.error(error);
+        console.error(
+            error
+        );
 
 
         if (
-            error.name === "AbortError"
+            error.name ===
+            "AbortError"
         ) {
 
             setStatus(
@@ -787,7 +3247,9 @@ async function sharePDF() {
 
     finally {
 
-        pdfButton.disabled = false;
+        pdfButton.disabled =
+            false;
+
 
         pdfButton.textContent =
             "Share PDF";
@@ -795,3 +3257,83 @@ async function sharePDF() {
     }
 
 }
+
+
+/* ============================================================
+   HTML ESCAPE
+   ============================================================ */
+
+function escapeHtml(
+    value
+) {
+
+    return String(
+        value
+    )
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+/* ============================================================
+   START
+   ============================================================ */
+
+if (
+    sessionToken
+) {
+
+    showApp();
+
+}
+
+else {
+
+    pinScreen.style.display =
+        "flex";
+
+    app.classList.add(
+        "hidden"
+    );
+
+    setTimeout(
+        function() {
+
+            pinInput.focus();
+
+        },
+        100
+    );
+
+}
+
+</script>
+
+
+</body>
+
+</html>
