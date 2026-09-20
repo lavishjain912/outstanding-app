@@ -1415,7 +1415,7 @@ let sessionToken =
    SHOW APP
    ============================================================ */
 
-function showApp() {
+function showApp(initialBuyers) {
 
     pinScreen.style.display =
         "none";
@@ -1424,7 +1424,14 @@ function showApp() {
         "hidden"
     );
 
-    loadBuyers();
+    // Newly validated PIN: use the buyers returned by the same
+    // request instead of making a second network request.
+    // Existing sessions (and old backends) still fetch buyers.
+    if (Array.isArray(initialBuyers)) {
+        installBuyers(initialBuyers);
+    } else {
+        loadBuyers();
+    }
 
 }
 
@@ -1467,7 +1474,8 @@ async function verifyPIN() {
             await fetch(
                 API_URL +
                 "?action=login&pin=" +
-                encodeURIComponent(pin)
+                encodeURIComponent(pin) +
+                "&include_buyers=1"
             );
 
 
@@ -1497,7 +1505,10 @@ async function verifyPIN() {
         );
 
 
-        showApp();
+        // Optimized backend returns buyers with a successful login.
+        // If the backend has not yet been updated, showApp falls back
+        // to the original protected buyer-list request.
+        showApp(data.buyers);
 
     }
 
@@ -1724,7 +1735,20 @@ function authParameter() {
 
 
 /* ============================================================
-   LOAD BUYERS
+   APPLY BUYER LIST (no additional network request)
+   ============================================================ */
+
+function installBuyers(list) {
+    buyers = list;
+    filteredBuyers = [...buyers];
+    selectedBuyer = "";
+    loadButton.disabled = true;
+    renderBuyerList(filteredBuyers);
+    setStatus(buyers.length + " buyers loaded");
+}
+
+/* ============================================================
+   LOAD BUYERS (existing sessions / fallback)
    ============================================================ */
 
 async function loadBuyers() {
@@ -1769,23 +1793,7 @@ async function loadBuyers() {
         }
 
 
-        buyers =
-            data.buyers || [];
-
-
-        filteredBuyers =
-            [...buyers];
-
-
-        renderBuyerList(
-            filteredBuyers
-        );
-
-
-        setStatus(
-            buyers.length +
-            " buyers loaded"
-        );
+        installBuyers(data.buyers || []);
 
     }
 
@@ -1839,6 +1847,9 @@ function renderBuyerList(
     }
 
 
+    // Attach all buyer rows in one DOM operation for faster rendering.
+    const fragment = document.createDocumentFragment();
+
     list.forEach(
         function(buyer) {
 
@@ -1880,12 +1891,12 @@ function renderBuyerList(
             );
 
 
-            buyerList.appendChild(
-                item
-            );
+            fragment.appendChild(item);
 
         }
     );
+
+    buyerList.appendChild(fragment);
 
 }
 
