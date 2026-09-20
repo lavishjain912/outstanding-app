@@ -1366,6 +1366,49 @@ button {
 const API_URL =
     "https://script.google.com/macros/s/AKfycbxA-kfhKp1DfL_x4uIr82aWntma7dzqwFvKPzFe4AFuOqT48P0Pm-AsiNYGOUWCSx_I/exec";
 
+// Diagnose a failed Apps Script response instead of exposing Safari's
+// ambiguous "The string did not match the expected pattern" message.
+async function apiJson(url, context, timeoutMs = 18000) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
+    let response;
+    try {
+        response = await fetch(url, {
+            signal: controller.signal,
+            redirect: "follow",
+            cache: "no-store"
+        });
+    } catch (error) {
+        if (controller.signal.aborted) {
+            throw new Error(context + " timed out. Please retry.");
+        }
+        throw new Error(context + " could not connect. Check your internet connection and retry.");
+    } finally {
+        clearTimeout(timer);
+    }
+
+    if (!response.ok) {
+        throw new Error(context + ": server HTTP " + response.status + ".");
+    }
+
+    let raw;
+    try {
+        raw = await response.text();
+    } catch (error) {
+        throw new Error(context + ": the server response could not be read. Please retry.");
+    }
+
+    if (!raw || !raw.trim().startsWith("{")) {
+        throw new Error(context + ": server returned a page instead of data. Check the Apps Script deployment and its URL.");
+    }
+
+    try {
+        return JSON.parse(raw);
+    } catch (error) {
+        throw new Error(context + ": invalid server data. Please retry.");
+    }
+}
+
 
 /* ============================================================
    PIN / SESSION
@@ -1470,17 +1513,12 @@ async function verifyPIN() {
 
     try {
 
-        const response =
-            await fetch(
-                API_URL +
-                "?action=login&pin=" +
-                encodeURIComponent(pin) +
-                "&include_buyers=1"
-            );
-
-
-        const data =
-            await response.json();
+        // Validate the PIN first: do not wait for Drive or buyer names.
+        const data = await apiJson(
+            API_URL + "?action=login&pin=" + encodeURIComponent(pin),
+            "PIN verification",
+            18000
+        );
 
 
         if (
@@ -1498,6 +1536,9 @@ async function verifyPIN() {
         sessionToken =
             data.token || "";
 
+        if (!sessionToken) {
+            throw new Error("PIN verification returned no session. Check the Apps Script deployment.");
+        }
 
         sessionStorage.setItem(
             SESSION_KEY,
@@ -1518,8 +1559,9 @@ async function verifyPIN() {
             error.message ||
             "Incorrect PIN";
 
-        pinInput.value =
-            "";
+        if (/incorrect PIN/i.test(error.message || "")) {
+            pinInput.value = "";
+        }
 
         pinInput.focus();
 
@@ -1734,6 +1776,22 @@ function authParameter() {
 }
 
 
+
+function requireNewPIN() {
+    sessionToken = "";
+    sessionStorage.removeItem(SESSION_KEY);
+    buyers = [];
+    filteredBuyers = [];
+    selectedBuyer = "";
+    currentBuyerData = null;
+    report.classList.add("hidden");
+    app.classList.add("hidden");
+    pinScreen.style.display = "flex";
+    pinInput.value = "";
+    pinError.textContent = "Session expired. Please enter the PIN again.";
+    pinInput.focus();
+}
+
 /* ============================================================
    APPLY BUYER LIST (no additional network request)
    ============================================================ */
@@ -1760,40 +1818,25 @@ async function loadBuyers() {
         );
 
 
-        const response =
-            await fetch(
-                API_URL +
-                "?action=buyers" +
-                authParameter()
-            );
+        const data = await apiJson(
+            API_URL + "?action=buyers" + authParameter(),
+            "Buyer list",
+            18000
+        );
 
 
-        if (!response.ok) {
-
-            throw new Error(
-                "Server returned " +
-                response.status
-            );
-
+        if (data.code === "AUTH_REQUIRED") {
+            requireNewPIN();
+            return;
+        }
+        if (data.error) {
+            throw new Error(data.error);
+        }
+        if (!Array.isArray(data.buyers)) {
+            throw new Error("Buyer list: the server sent an unexpected response. Check deployment versions.");
         }
 
-
-        const data =
-            await response.json();
-
-
-        if (
-            data.error
-        ) {
-
-            throw new Error(
-                data.error
-            );
-
-        }
-
-
-        installBuyers(data.buyers || []);
+        installBuyers(data.buyers);
 
     }
 
@@ -1812,8 +1855,10 @@ async function loadBuyers() {
         buyerList.innerHTML = `
             <div class="no-buyers">
                 Unable to load buyers.
+                <button type="button" id="retryBuyers" class="primary">Retry loading buyers</button>
             </div>
         `;
+        document.getElementById("retryBuyers").addEventListener("click", loadBuyers);
 
     }
 
@@ -2073,22 +2118,7 @@ async function loadBuyer() {
             authParameter();
 
 
-        const response =
-            await fetch(url);
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                "Server returned " +
-                response.status
-            );
-
-        }
-
-
-        const data =
-            await response.json();
+        const data = await apiJson(url, "Outstanding report", 18000);
 
 
         if (
@@ -2101,6 +2131,11 @@ async function loadBuyer() {
 
         }
 
+
+        if (data.code === "AUTH_REQUIRED") {
+            requireNewPIN();
+            return;
+        }
 
         currentBuyerData =
             data;
